@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>首页</title>
+    <link rel="icon" href="favicon.ico" type="image/ico">
+    <meta name="author" content="yinqi">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <div class="header"></div>
+        <!--End 左侧导航-->
+
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content1">
+
+
+            <div class="container-fluid">
+                <div class="col-md-2">
+                    <img src="images/add.png" class="img-circle" style="width: 250px;height: 200px;"
+                         onclick="addProject()">
+
+                </div>
+
+
+                <div id="projectList">
+
+
+                </div>
+
+
+            </div>
+
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/url.js"></script>
+<script type="text/javascript" src="js/check.js"></script>
+<script type="text/javascript" src="js/localStorage.js"></script>
+<!--图表插件-->
+<script type="text/javascript">
+
+    var data = foowwLocalStorage.get('tocken');
+
+    var obj = JSON.parse(data);
+    console.log(obj);
+
+
+    function getQueryString() {
+        var obg = {}, a = '';
+        (a = window.location.search.substr(1)) || (a = window.location.hash.split('?')[1])
+        a.split(/&/g).forEach(function (item) {
+            obg[(item = item.split('='))[0]] = item[1];
+        })
+        return obg
+    }
+
+    function addProject() {
+        location.href = "projectAdd.html?menuId=2000";
+    }
+
+    function hrefEdit(obj) {
+        console.log(obj.id);
+        var userInfo = sessionStorage.getItem('userInfo');
+
+        var userInfo = JSON.parse(userInfo);
+        console.log(userInfo.data.permissions);
+        if (userInfo.data.permissions.indexOf("project_info") > -1) {
+            sessionStorage.setItem("projectId", JSON.stringify(obj.id));
+            location.href = "projectEdit.html";
+        } else {
+            alert("暂无权限");
+        }
+    }
+
+    // 按钮示例
+    $(function () {
+        $(".header").load("inc/top.html");
+
+
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: GlobalConfig.IPSSAddress + "iot/project/allPorjectList",
+            beforeSend: function (XMLHttpRequest) {
+                XMLHttpRequest.setRequestHeader("Authorization", "Bearer " + obj.access_token);
+            },
+            success: function (res) {
+                var html = "";
+
+                for (var i = 0; i < res.data.length; i++) {
+                    html += "<div class=\"col-md-2\" onclick='hrefEdit(this)' id=" + res.data[i].projetId + " >" +
+                        "                    <div class=\"card\">\n" +
+                        "                        <div class=\"card-header\"><h4>" + res.data[i].projectName + "</h4></div>\n" +
+                        "                        <div class=\"card-body\">\n" +
+                        "\n" +
+                        "                            <div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">\n" +
+                        "                                <div class=\"carousel-inner\" role=\"listbox\">\n" +
+                        "                                    <div class=\"item active\"><img src=" + res.data[i].projectImg + " style=\"width:200px;height:230px;\"></div>\n" +
+                        "                                </div>\n" +
+                        "                            </div>\n" +
+                        "\n" +
+                        "                        </div>\n" +
+                        "                    </div>\n" +
+                        "                </div>";
+
+                }
+
+                $("#projectList").html(html);
+
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

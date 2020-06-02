@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-common/dd-common-minio" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-common/dd-common-util" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-common/dd-service-util" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-gateway" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product-client/dd-iot-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product/dd-iot" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product/dd-lighting" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dd-product/dd-product-user" charset="UTF-8" />
+  </component>
+</project>

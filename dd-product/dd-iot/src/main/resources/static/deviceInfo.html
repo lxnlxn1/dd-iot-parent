@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>项目设备详情</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <title>地图显示</title>
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+            <!-- logo -->
+            <div id="logo" class="sidebar-header">
+
+            </div>
+            <div class="lyear-layout-sidebar-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer" id="menuList">
+
+
+                    </ul>
+                </nav>
+
+            </div>
+        </aside>
+        <!--End 左侧导航-->
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="breadcrumb">
+                            <li><a href="deviceList.html">项目设备</a></li>
+                            <li><a href="#">设备详情</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col-lg-12" id="DeviceInfo">
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+    </div>
+    <div id="allmap"></div>
+    </main>
+
+
+    <!--End 页面主要内容-->
+</div>
+</div>
+<style type="text/css">
+    body, html, #allmap {
+        width: 1000px;
+        height: 700px;
+    }
+</style>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/url.js"></script>
+<script type="text/javascript" src="js/check.js"></script>
+<script type="text/javascript" src="js/localStorage.js"></script>
+<script type="text/javascript"
+        src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=fZBdrBrEeg277rF3uCa47DjjSsPTAY3T"></script>
+
+<script>
+
+
+    var data = foowwLocalStorage.get('tocken');
+    var obj = JSON.parse(data);
+
+
+    $(function () {
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: GlobalConfig.IPSSAddress + "iot/device/deviceInfo",
+            data: {
+                deviceId: getQueryString("deviceId").deviceId
+            },
+            success: function (res) {
+                console.log(res.data);
+                var html = "<div class=\"col-lg-6\">设备品牌:" + res.data.brandName + "</div>" + "<div class=\"col-lg-6\">设备编号:" + res.data.deviceId + "</div>" +
+                    "<div class=\"col-lg-6\">设备型号:" + res.data.modelName + "</div>" + "<div class=\"col-lg-6\">经纬度:" + res.data.latitude + "," + res.data.longitude + "</div>" +
+                    "<div class=\"col-lg-6\">供电电源:" + res.data.modelPower + "</div>" + "<div class=\"col-lg-6\">modBudID:" + res.data.subsetId + "</div>" +
+                    "<div class=\"col-lg-6\">通讯接口:" + res.data.modelCommunication + "</div>" + "<div class=\"col-lg-6\">波特率:" + res.data.connectBaud + "</div>" +
+                    "<div class=\"col-lg-6\">平均功耗:" + res.data.modelPowerWaste + "</div>" + "<div class=\"col-lg-6\">安装人员:" + res.data.userName + "</div>" +
+                    "<div class=\"col-lg-6\">监测指标:" + res.data.dataList + "</div>" + "<div class=\"col-lg-6\">上级节点:" + res.data.upsideId + "</div>"
+                ;
+                $("#DeviceInfo").html(html);
+                var map = new BMapGL.Map("allmap");
+                var point = new BMapGL.Point(res.data.longitude, res.data.latitude);
+                map.centerAndZoom(point, 17);
+                map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+                // 创建小车图标
+                var pt = new BMapGL.Point(res.data.longitude, res.data.latitude);
+                var myIcon = new BMapGL.Icon("/dd-sd-park/dd-iot-biz/static/images/resizeApi.png", new BMapGL.Size(100, 100));
+                var marker = new BMapGL.Marker(pt, {
+                    icon: myIcon
+                });  // 创建标注
+                map.addOverlay(marker);
+
+
+            }
+        })
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: GlobalConfig.IPSSAddress + "admin/menu/tree",
+            success: function (res) {
+                console.log(res);
+                var tree = JSON.parse(JSON.stringify(res));
+                var html = "";
+                for (var i = 0; i < tree.data.length; i++) {
+                    if (tree.data[i].id == 2000) {
+                        for (var k = 0; k < tree.data[i].children.length; k++) {
+                            html += "<li class=\"nav-item  \">" +
+                                "<a href=" + tree.data[i].children[k].path + ".html" + ">" + tree.data[i].children[k].name + "</a>" +
+                                "<ul class=\"nav nav-subnav\">\n" +
+                                "</ul>" +
+                                "</li>";
+                        }
+                    }
+                }
+                $("#menuList").html(html);
+
+            }
+        })
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: GlobalConfig.IPSSAddress + "admin/role/list",
+            beforeSend: function (XMLHttpRequest) {
+                XMLHttpRequest.setRequestHeader("Authorization", "Bearer " + obj["access_token"]);
+            },
+            success: function (res) {
+                console.log(res);
+                html = ""
+                for (var i = 0; i < res.data.length; i++) {
+                    html += "<div class=\"example-box\">\n" +
+                        "                                   <span class=\"nav-item\" onclick=\"roleClick(this)\" id=" + res.data[i].roleId + ">" + res.data[i].roleName + "</span>\n" +
+                        "                                   <span class=\"mdi mdi-lead-pencil\" onclick=\"roleEdit(this)\" id=" + res.data[i].roleId + " name=" + res.data[i].roleName + "></span>\n" +
+                        "                                   <span class=\"mdi mdi-delete-empty \" onclick=\"roleDelect(this)\" id=" + res.data[i].roleId + "></span>\n" +
+                        "\n" +
+                        "                               </div>\n";
+                }
+                $("#roleList").html(html);
+            }
+        })
+
+    })
+
+    function getQueryString() {
+        var obg = {}, a = '';
+        (a = window.location.search.substr(1)) || (a = window.location.hash.split('?')[1])
+        a.split(/&/g).forEach(function (item) {
+            obg[(item = item.split('='))[0]] = item[1];
+        })
+        return obg
+    }
+
+
+</script>

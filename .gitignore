@@ -1,0 +1,9 @@
+# Project exclude paths
+/dd-common/dd-common-minio/target/
+/dd-common/dd-common-util/target/
+/dd-common/dd-service-util/target/
+/dd-gateway/target/
+/dd-model/target/
+/dd-product/dd-iot/target/
+/dd-product/dd-lighting/target/
+/dd-product/dd-product-user/target/

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>项目添加</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+    <link href="https://www.17sucai.com/preview/1/2017-08-21/bootstrap-fileinput/css/bootstrap-fileinput.css"
+          rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+            <!-- logo -->
+            <div id="logo" class="sidebar-header">
+
+            </div>
+            <div class="lyear-layout-sidebar-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer" id="menuList">
+
+
+                    </ul>
+                </nav>
+
+            </div>
+        </aside>
+        <!--End 左侧导航-->
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <form class="row" id="projectFrom" method="post" enctype="multipart/form-data">
+                                    <div class="form-group col-md-12">
+                                        <label for="projectName">项目名称</label>
+                                        <input type="text" class="form-control" id="projectName" value=""/>
+                                    </div>
+                                    <div class="form-group col-md-12" id="warp">
+                                        <label>项目类型</label>
+                                        <input type="radio" name="projectType" value="1">本地部署项目
+                                        <input type="radio" name="projectType" value="0">云服务项目
+
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label for="projectSite">项目地点</label>
+                                        <input type="text" class="form-control" id="projectSite" name="projectSite"
+                                               value=""/>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label for="projectDesc">描述</label>
+                                        <textarea class="form-control" id="projectDesc" name="projectDesc" rows="5"
+                                                  value=""></textarea>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label>项目图片</label>
+                                        <div class="form-group" id="uploadForm" enctype='multipart/form-data'>
+                                            <div class="h4">图片预览</div>
+                                            <div class="fileinput fileinput-new" data-provides="fileinput"
+                                                 id="exampleInputUpload">
+                                                <div class="fileinput-new thumbnail"
+                                                     style="width: 200px;height: auto;max-height:150px;">
+                                                    <img id='picImg' style="width: 100%;height: auto;max-height: 140px;"
+                                                         src="images/noimage.png" alt=""/>
+                                                </div>
+                                                <div class="fileinput-preview fileinput-exists thumbnail"
+                                                     style="max-width: 200px; max-height: 150px;"></div>
+                                                <div>
+                                                        <span class="btn btn-primary btn-file">
+                                                            <span class="fileinput-new">选择文件</span>
+                                                            <span class="fileinput-exists">换一张</span>
+                                                            <input type="file" id="projectFile" name="projectFile"/>
+                                                        </span>
+                                                    <input type="hidden" id="projectImg">
+                                                    <a href="javascript:;" class="btn btn-warning fileinput-exists"
+                                                       data-dismiss="fileinput">移除</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="uploadSubmit" class="btn btn-info">提交</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/url.js"></script>
+<script type="text/javascript" src="js/check.js"></script>
+<script type="text/javascript"
+        src="https://www.17sucai.com/preview/1/2017-08-21/bootstrap-fileinput/js/bootstrap-fileinput.js"></script>
+<script>
+
+    $(function () {
+        //比较简洁，细节可自行完善
+        $('#uploadSubmit').click(function () {
+            var formData = new FormData();
+            var data = $('#projectFile')[0].files[0];
+            var name = $('#projectFile').val();
+            formData.append('fileImg', data);
+            if ($('#projectName').val() == null) {
+                alert("项目名称不能为空");
+                return;
+            } else if ($("input[name='projectType']:checked").val() == null) {
+                alert("请选择项目类型");
+                return;
+            } else if ($('#projectSite').val() == null) {
+                alert("项目地址不能为空");
+                return;
+            } else if (data == null) {
+                alert("图片不能为空");
+                return;
+            }
+
+            $.ajax({
+                url: GlobalConfig.IPSSAddress + 'iot/project/upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                mimeType: "multipart/form-data",
+                success: function (res) {
+
+                    var res = JSON.parse(res);
+                    if (res.code == 0) {
+
+                        var dataJson = {
+                            "projectName": $('#projectName').val(),
+                            "projectType": $("input[name='projectType']:checked").val(),
+                            "projectSite": $('#projectSite').val(),
+                            "projectDesc": $('#projectDesc').val(),
+                            "projectImg": "http://192.168.1.117:9000/" + res.data.bucketName + "/" + res.data.fileName,
+                        }
+                        $.ajax({
+                            url: GlobalConfig.IPSSAddress + 'iot/project/projectSave',
+                            type: 'POST',
+                            dataType: "json",
+                            contentType: 'application/json;charset=utf-8',
+                            data: JSON.stringify(dataJson),
+                            success: function (data) {
+                                alert("添加成功");
+                                location.href = "projectTeam.html?menuId=2001";
+                            },
+                            error: function (data) {
+                                alert("失败");
+                            }
+                        });
+                    }
+
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+
+        })
+        $(function () {
+
+            $.ajax({
+                type: "get",
+                dataType: "json",
+                url: GlobalConfig.IPSSAddress + "admin/menu/tree",
+                success: function (res) {
+                    console.log(res);
+                    var tree = JSON.parse(JSON.stringify(res));
+                    var html = "";
+                    for (var i = 0; i < tree.data.length; i++) {
+                        if (tree.data[i].id == 2000) {
+                            for (var k = 0; k < tree.data[i].children.length; k++) {
+                                html += "<li class=\"nav-item  \" >" +
+                                    "<a href=" + tree.data[i].children[k].path + ".html" + ">" + tree.data[i].children[k].name + "</a>" +
+                                    "<ul class=\"nav nav-subnav\">\n" +
+                                    "</ul>" +
+                                    "</li>";
+                            }
+
+                        }
+
+
+                    }
+                    $("#menuList").html(html);
+
+                }
+            })
+        })
+
+        function getQueryString() {
+            var obg = {}, a = '';
+            (a = window.location.search.substr(1)) || (a = window.location.hash.split('?')[1])
+            a.split(/&/g).forEach(function (item) {
+                obg[(item = item.split('='))[0]] = item[1];
+            })
+            return obg
+        }
+
+        var data = foowwLocalStorage.get('tocken');
+        var obj = JSON.parse(data);
+    });
+</script>

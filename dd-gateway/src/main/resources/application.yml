@@ -1,0 +1,41 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: dd-gateway
+  redis:
+    host: 192.168.200.128
+    port: 6379
+    database: 0
+    timeout: 1800000
+    password:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.200.128:8848
+    gateway:
+      discovery:      #是否与服务发现组件进行结合，通过 serviceId(必须设置成大写) 转发到具体的服务实例。默认为false，设为true便开启通过服务中心的自动根据 serviceId 创建路由的功能。
+        locator:      #路由访问方式：http://Gateway_HOST:Gateway_PORT/大写的serviceId/**，其中微服务应用名默认大写访问。
+          enabled: true
+      routes:
+        - id: dd-iot
+          uri: lb://dd-iot
+          predicates:
+            - Path=/iot/** # 路径匹配
+        - id: dd-user
+          uri: lb://dd-user
+          predicates:
+            - Path=/user/** # 路径匹配
+        - id: dd-lighting
+          uri: lb://dd-lighting
+          predicates:
+            - Path=/light/** # 路径匹配
+          filters:
+          - name: RequestRateLimiter
+            args:
+              redis-rate-limiter.replenishRate: 2 #允许用户每秒处理多少个请求
+              redis-rate-limiter.burstCapacity: 2 #令牌桶的容量，允许在一秒钟内完成的最大请求数
+              key-resolver: "#{@apiKeyResolver}"
+# 验证url 用户如果未登录的情况下，不允许访问的哪些控制！
+authUrls:
+  url: index.html

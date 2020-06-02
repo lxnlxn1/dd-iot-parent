@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="dd-gateway" />
+        <module name="dd-iot" />
+        <module name="dd-common-util" />
+        <module name="dd-service-util" />
+        <module name="dd-iot-client" />
+        <module name="dd-model" />
+        <module name="dd-lighting" />
+        <module name="dd-common-minio" />
+        <module name="dd-product-user" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="8" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dd-common-minio" options="-parameters" />
+      <module name="dd-common-util" options="-parameters" />
+      <module name="dd-gateway" options="-parameters" />
+      <module name="dd-iot" options="-parameters" />
+      <module name="dd-iot-client" options="-parameters" />
+      <module name="dd-iot-parent" options="-parameters" />
+      <module name="dd-lighting" options="-parameters" />
+      <module name="dd-model" options="-parameters" />
+      <module name="dd-product" options="-parameters" />
+      <module name="dd-product-client" options="-parameters" />
+      <module name="dd-product-user" options="-parameters" />
+      <module name="dd-service-util" options="-parameters" />
+    </option>
+  </component>
+</project>
