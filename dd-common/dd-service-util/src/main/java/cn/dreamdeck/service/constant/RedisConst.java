@@ -22,10 +22,18 @@ public class RedisConst {
 
     //用户登录
     public static final String USER_LOGIN_KEY_PREFIX = "user:login:";
-    //    public static final String userinfoKey_suffix = ":info";
     public static final int USERKEY_TIMEOUT = 60 * 60 * 24 * 7;
 
-    //设备前缀
+    //前台项目用户数据
+    public static final String PROJECT_USER_KEY_PREFIX = "project:user:";
+    public static final int PROJECT_USER_TIMEOUT = 60 * 60 * 24 * 7;//过期时间
+
+
+    //语音垃圾桶
+    public static final String DEVICE_TRASH_DATA = "device:trash:data:";
+    public static final String DEVICE_TRASH_NUM = "device:trash:num:";
+
+
 
 
 

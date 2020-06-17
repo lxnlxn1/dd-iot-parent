@@ -12,13 +12,16 @@
     <artifactId>dd-product</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>dd-iot</module>
         <module>dd-product-user</module>
         <module>dd-lighting</module>
+        <module>dd-trash</module>
+        <module>dd-iot</module>
     </modules>
 
 
     <dependencies>
+
+        <!--service-utli模块-->
         <dependency>
             <groupId>cn.dreamdeck</groupId>
             <artifactId>dd-service-util</artifactId>

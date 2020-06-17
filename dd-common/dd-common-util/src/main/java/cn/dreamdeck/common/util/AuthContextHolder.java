@@ -1,4 +1,4 @@
-package com.atguigu.gmall.common.util;
+package cn.dreamdeck.common.util;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 
@@ -20,13 +20,4 @@ public class AuthContextHolder {
         return StringUtils.isEmpty(userId) ? "" : userId;
     }
 
-    /**
-     * 获取当前未登录临时用户id
-     * @param request
-     * @return
-     */
-    public static String getUserTempId(HttpServletRequest request) {
-        String userTempId = request.getHeader("userTempId");
-        return StringUtils.isEmpty(userTempId) ? "" : userTempId;
-    }
 }

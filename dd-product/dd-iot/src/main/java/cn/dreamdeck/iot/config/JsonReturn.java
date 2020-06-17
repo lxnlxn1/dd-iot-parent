@@ -22,6 +22,9 @@ import java.util.Enumeration;
 public class JsonReturn {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    //private static Logger logger = Logger.getLogger(JsonReturn.class);
+
+
     @Pointcut("execution(public * cn.dreamdeck.iot.controller..*.*(..))")
     public void webLog() {
     }

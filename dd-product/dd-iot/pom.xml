@@ -10,25 +10,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dd-iot</artifactId>
-    <name>service-product</name>
-    <description>service-product</description>
+
+
 
     <dependencies>
 
+        <!--用户模块 -->
         <dependency>
             <groupId>cn.dreamdeck</groupId>
-            <artifactId>dd-common-minio</artifactId>
+            <artifactId>dd-user-client</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
         </dependency>
-<!--        &lt;!&ndash;rabbitmq消息队列&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>cn.dreamdeck</groupId>-->
-<!--            <artifactId>dd-rabbit-util</artifactId>-->
-<!--            <version>1.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
 
     </dependencies>
-
 
 </project>

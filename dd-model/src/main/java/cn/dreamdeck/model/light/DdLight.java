@@ -67,5 +67,7 @@ public class DdLight implements Serializable {
 
     private Integer lastElectricity;
 
+    private Integer zoneId;
+
 
 }

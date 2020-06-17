@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>dd-iot-client</module>
+        <module>dd-user-client</module>
     </modules>
     <artifactId>dd-product-client</artifactId>
 

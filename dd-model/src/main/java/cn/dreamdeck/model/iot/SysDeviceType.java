@@ -1,41 +1,46 @@
 package cn.dreamdeck.model.iot;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 设备类别管理
+ * </p>
+ *
+ * @author lxn
+ * @since 2020-06-15
+ */
 @Data
-@ApiModel(value = "设备类别")
-@TableName("sys_device_type")
-@EqualsAndHashCode(callSuper = true)
-public class SysDeviceType extends Model<SysDeviceType> {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value="SysDeviceType对象", description="设备类别管理")
+public class SysDeviceType implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "type_id", type = IdType.AUTO)
-    @ApiModelProperty(value = "设备类别id")
+    @ApiModelProperty(value = "类别ID")
+    @TableId(value = "type_id", type = IdType.ID_WORKER_STR)
     private Integer typeId;
 
-    @TableField(value = "`classify_id`")
-    @ApiModelProperty(value = "分类id")
+    @ApiModelProperty(value = "分类ID")
     private Integer classifyId;
 
-    @TableField(value = "`type_name`")
-    @ApiModelProperty(value = "设备类型名称")
+    @ApiModelProperty(value = "类别名称")
     private String typeName;
 
-    @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "类别状态")
     private Integer status;
 
-    @TableField(value = "`url`")
-    @ApiModelProperty(value = "跳转url")
+    @ApiModelProperty(value = "类别url")
     private String url;
+
 
 }

@@ -6,7 +6,4 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.200.128:8848
-server:
-  servlet:
-    context-path=/dd-iot
+        server-addr: 192.168.1.96:8848

@@ -42,19 +42,34 @@ public class LightController {
         return DdResult.ok(map);
     }
 
-    //设置路灯工作模式，分为常规模式（恒定亮度，mode值：01）和感应模式（感应到人之后亮度发生变化，mode值：00）
+    //在路灯的常规模式下设置路灯的亮度
     @PostMapping("/luminance")
     public DdResult luminance(String lightValue, String deviceId) {
 
+
         return DdResult.ok().message("成功");
+
     }
 
 
-    //在路灯的常规模式下设置路灯的亮度
+
+    //设置路灯工作模式，分为常规模式（恒定亮度，mode值：01）和感应模式（感应到人之后亮度发生变化，mode值：00）
     @PostMapping("/workPattern")
     public DdResult workPattern(String mode, String deviceId) {
 
+        if (StringUtils.isEmpty(mode)){
+
+            mode="01";
+        }
+
+        DdLight lightId = ddLightService.getOne(new QueryWrapper<DdLight>().eq("light_id", deviceId));
+
+        lightId.setMode(Integer.valueOf(mode));
+
+        ddLightService.updateById(lightId);
+
         return DdResult.ok().message("成功");
+
     }
 
 
@@ -206,10 +221,16 @@ public class LightController {
 
         }
         DdLight light = ddLightService.getOne(new QueryWrapper<DdLight>().eq("light_id", id1));
+//
+//        if (light.getLastElectricity()-light.getInitialElectricity()<0){
+//            return DdResult.fail("设备异常");
+//        }
 
+        if (null==light){
+            return DdResult.fail("设备不存在");
+        }
 
-
-        return DdResult.ok(light.getInitialElectricity()-light.getLastElectricity());
+        return DdResult.ok(light.getLastElectricity()-light.getInitialElectricity());
     }
 
 }

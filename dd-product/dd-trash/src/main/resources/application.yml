@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: dd-trash
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.1.96:8848

@@ -1,33 +1,38 @@
 package cn.dreamdeck.model.iot;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 设备分类管理
+ * </p>
+ *
+ * @author lxn
+ * @since 2020-06-15
+ */
 @Data
-@ApiModel(value = "设备分类管理")
-@TableName("sys_device_classify")
-@EqualsAndHashCode(callSuper = true)
-public class SysDeviceClassify extends Model<SysDeviceClassify> {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value="SysDeviceClassify对象", description="设备分类管理")
+public class SysDeviceClassify implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "classify_id", type = IdType.AUTO)
-    @ApiModelProperty(value = "分类id")
+    @ApiModelProperty(value = "分类ID")
+    @TableId(value = "classify_id", type = IdType.ID_WORKER_STR)
     private Integer classifyId;
 
-    @TableField(value = "`classify_name`")
     @ApiModelProperty(value = "分类名称")
-    private String brandName;
+    private String classifyName;
 
-    @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态")
     private Integer status;
 
 

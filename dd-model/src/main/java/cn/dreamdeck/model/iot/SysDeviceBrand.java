@@ -1,47 +1,52 @@
 package cn.dreamdeck.model.iot;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
+/**
+ * <p>
+ * 品牌表
+ * </p>
+ *
+ * @author lxn
+ * @since 2020-06-15
+ */
 @Data
-@ApiModel(value = "品牌管理")
-@TableName("sys_device_brand")
-@EqualsAndHashCode(callSuper = true)
-public class SysDeviceBrand extends Model<SysDeviceBrand> {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value="SysDeviceBrand对象", description="品牌表")
+public class SysDeviceBrand implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "brand_id", type = IdType.AUTO)
-    @ApiModelProperty(value = "品牌id")
+    @TableId(value = "brand_id", type = IdType.ID_WORKER_STR)
     private String brandId;
 
-    @TableField(value = "`classify_id`")
-    @ApiModelProperty(value = "分类id")
+    @ApiModelProperty(value = "分类ID")
     private Integer classifyId;
 
-    @TableField(value = "`type_id`")
-    @ApiModelProperty(value = "类别id")
-    private Integer typeId;
+    @ApiModelProperty(value = "类别ID")
+    private String typeId;
 
-    @TableField(value = "`brand_name`")
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-    @TableField(value = "`status`")
     @ApiModelProperty(value = "状态")
     private Integer status;
 
-
-    @TableField(value = "`create_time`")
     @ApiModelProperty(value = "创建时间")
     private String createTime;
+
+    private String var1;
+
+    private String var2;
 
 
 }

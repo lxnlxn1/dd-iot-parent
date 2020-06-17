@@ -10,14 +10,14 @@ spring:
   cloud:
     sentinel:
       transport:
-        dashboard: http://192.168.200.128:8858
+        dashboard: http://192.168.1.96:8858 #web页面限流熔断
   rabbitmq:
-    host: 192.168.200.128
+    host: 192.168.1.96
     port: 5672
     username: guest
     password: guest
   redis:
-    host: 192.168.200.128
+    host: 192.168.1.96
     port: 6379
     database: 0
     timeout: 1800000
@@ -31,9 +31,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.200.128:3306/dreamdeck_light?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.1.96:13306/dreamdeck_light?characterEncoding=utf-8&useSSL=false
     username: root
-    password: root
+    password: 123456
     hikari:
       connection-test-query: SELECT 1 # 自动检测连接
       connection-timeout: 60000 #数据库连接超时时间,默认30秒

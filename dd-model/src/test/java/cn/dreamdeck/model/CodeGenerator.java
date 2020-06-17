@@ -41,17 +41,16 @@ public class CodeGenerator {
 
         // 3、数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://192.168.200.128:3306/dreamdeck_light");
+        dsc.setUrl("jdbc:mysql://192.168.1.96:13306/dd-iot");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("root");
+        dsc.setPassword("123456");
         dsc.setDbType(DbType.MYSQL);
         mpg.setDataSource(dsc);
-
         // 4、包配置
         PackageConfig pc = new PackageConfig();
-        pc.setModuleName("dd-model"); //模块名
-        pc.setParent("cn.dreamdeck.model.light");
+       // pc.setModuleName("dd-model"); //模块名
+        pc.setParent("cn.dreamdeck.model.iot");
         //com.atguigu.eduservice
         pc.setController("controller");
         //com.atguigu.eduservice.controller
@@ -62,7 +61,7 @@ public class CodeGenerator {
 
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("dd_light");
+        strategy.setInclude("dd_project_role");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 

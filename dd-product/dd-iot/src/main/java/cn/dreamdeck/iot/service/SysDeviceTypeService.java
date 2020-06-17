@@ -3,11 +3,15 @@ package cn.dreamdeck.iot.service;
 import cn.dreamdeck.model.iot.SysDeviceType;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
-
+/**
+ * <p>
+ * 设备类别管理 服务类
+ * </p>
+ *
+ * @author lxn
+ * @since 2020-06-15
+ */
 public interface SysDeviceTypeService extends IService<SysDeviceType> {
 
-    List<SysDeviceType> list(Integer classifyId);
 
-    SysDeviceType selectTypeId(String typeId);
 }

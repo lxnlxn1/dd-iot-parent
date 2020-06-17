@@ -32,7 +32,6 @@
         <minio.version>6.0.13</minio.version>
         <cloud.version>Hoxton.RELEASE</cloud.version>
         <cloud.alibaba.version>0.2.2.RELEASE</cloud.alibaba.version>
-        <gmall.version>1.0</gmall.version>
         <mybatis-plus.version>3.0.5</mybatis-plus.version>
         <mysql.version>5.1.46</mysql.version>
         <swagger.version>2.7.0</swagger.version>
@@ -82,7 +81,17 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
+            <!--添加log4j相关jar包-->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+            </dependency>
+
         </dependencies>
+
+
+
     </dependencyManagement>
 
     <repositories>
