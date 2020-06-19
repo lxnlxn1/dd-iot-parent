@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.device;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *  前端控制器
+ * 设备分类管理 前端控制器
  * </p>
  *
  * @author lxn
- * @since 2020-06-17
+ * @since 2020-06-15
  */
 @RestController
-@RequestMapping("/dd-project-role")
-public class DdProjectRoleController {
+@RequestMapping("/sys-device-classify")
+public class SysDeviceClassifyController {
 
 }
 

@@ -3,12 +3,16 @@ package cn.dreamdeck.user.controller;
 
 import cn.dreamdeck.common.result.DdResult;
 import cn.dreamdeck.common.util.AuthContextHolder;
+import cn.dreamdeck.iot.client.DdSynFeignService;
+import cn.dreamdeck.model.iot.DdSync;
 import cn.dreamdeck.model.user.SysRole;
 import cn.dreamdeck.model.user.SysUser;
 import cn.dreamdeck.service.constant.RedisConst;
 import cn.dreamdeck.user.service.SysRoleService;
 import cn.dreamdeck.user.service.SysUserService;
+import cn.dreamdeck.user.synchronization.Oa.AutoProjectByOa;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,6 +44,10 @@ public class SysUserController {
     @Autowired
     private SysRoleService sysRoleService;
 
+
+    @Autowired
+    private DdSynFeignService ddSynFeignService;
+
     AuthContextHolder authContextHolder = new AuthContextHolder();
 
     /**
@@ -61,7 +69,7 @@ public class SysUserController {
 
     @GetMapping("/passport/info")
     public DdResult info(HttpServletRequest request) {
-        String token = authContextHolder.getUserId(request);
+        String token = authContextHolder.getToken(request);
         String userKey = "user:login:" + token;
         String userId = (String) redisTemplate.opsForValue().get(userKey);
         SysUser sysUser = sysUserService.getUser(userId);
@@ -70,7 +78,7 @@ public class SysUserController {
         for (SysRole sysRole : roleList) {
             roleName.append(sysRole.getRoleName());
         }
-        if (null==sysUser){
+        if (null == sysUser) {
             return DdResult.fail("登录信息失效或用户已停用");
         }
         Map<String, String> map = new HashMap<>();
@@ -88,13 +96,12 @@ public class SysUserController {
      */
     @GetMapping("/passport/logout")
     public DdResult logout(HttpServletRequest request) {
-        String userId = authContextHolder.getUserId(request);
-
+        String token = authContextHolder.getToken(request);
+        String userKey = "user:login:" + token;
+        String userId = (String) redisTemplate.opsForValue().get(userKey);
         redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + "token");
         return DdResult.ok();
     }
-
-    
 
 
     /**
@@ -120,8 +127,6 @@ public class SysUserController {
             sysUserList = sysUserService.list(new QueryWrapper<SysUser>().orderByAsc("user_id").select("user_id", "username", "phone"));
             redisTemplate.opsForValue().set(RedisConst.PROJECT_USER_KEY_PREFIX, sysUserList, RedisConst.PROJECT_USER_TIMEOUT, TimeUnit.SECONDS);
         }
-
-
         return DdResult.ok(sysUserList);
     }
 
@@ -138,7 +143,32 @@ public class SysUserController {
         return sysUsers;
     }
 
-    ;
+    //OA用户同步接口
+    @ApiOperation("OA用户同步接口")
+    @GetMapping("/synchronizationUserByOa")
+    public DdResult synchronizationProjectByOa() {
+        DdResult synchronizationUrl = ddSynFeignService.getSynchronizationUrl("1");
+        ObjectMapper objectMapper = new ObjectMapper();
+        DdSync ddSync = objectMapper.convertValue(synchronizationUrl.getData(), DdSync.class);
+        AutoProjectByOa autoProjectByOa = new AutoProjectByOa();
+        int mas = autoProjectByOa.synchronizationProjectByOa(sysUserService, ddSync.getUrl());
+        if (mas != -1) {
+            return DdResult.ok("更新成功" + "本次更新" + mas + "条");
+        }
+        return DdResult.fail("更新失败");
+    }
+
+    //OA用户同步接口
+    @ApiOperation("根据用户OldUserId获取用户信息")
+    @GetMapping("/getUserById/{OldUserId}")
+    public SysUser getUserById(@PathVariable("OldUserId") String OldUserId) {
+        SysUser sysUser = sysUserService.getOne(new QueryWrapper<SysUser>().eq("old_id",OldUserId));
+
+        if (null != sysUser) {
+            return  sysUser;
+        }
+        return new SysUser();
+    }
 
 
 }

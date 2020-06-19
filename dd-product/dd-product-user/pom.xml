@@ -10,7 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dd-product-user</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>cn.dreamdeck</groupId>
+            <artifactId>dd-iot-client</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>

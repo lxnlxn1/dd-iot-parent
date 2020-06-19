@@ -25,7 +25,7 @@ public class DdProjectRole implements Serializable {
 
     private Integer projectId;
 
-    private Integer projectRoleId;
+    private Integer sysRoleId;
 
 
 }

@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="DdDevice对象", description="所有设备列表")
+@ApiModel(value="DdDeviceVo对象", description="所有设备列表")
 public class DdDeviceVo implements Serializable {
 
     private static final long serialVersionUID = 1L;

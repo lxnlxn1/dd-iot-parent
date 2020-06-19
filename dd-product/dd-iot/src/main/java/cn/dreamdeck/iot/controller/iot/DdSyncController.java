@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.iot;
 
 
 import cn.dreamdeck.common.data.DateUtil;
@@ -7,6 +7,7 @@ import cn.dreamdeck.iot.service.DdProjectService;
 import cn.dreamdeck.iot.service.DdSyncService;
 import cn.dreamdeck.iot.synchronization.Oa.AutoProjectByOa;
 import cn.dreamdeck.model.iot.DdSync;
+import cn.dreamdeck.user.client.SysUserFeignService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class DdSyncController {
     @Autowired
     private DdSyncService syncService;
 
+    @Autowired
+    private SysUserFeignService sysUserFeignService;
+
 
     AutoProjectByOa autoProjectByOa = new AutoProjectByOa();
 
@@ -42,28 +46,29 @@ public class DdSyncController {
     @ApiOperation("OA项目同步接口")
     @GetMapping("/synchronizationProjectByOa")
     public DdResult synchronizationProjectByOa() {
-        int mas = autoProjectByOa.synchronizationProjectByOa(ddProjectService);
+        DdSync ddSync = syncService.getById("2");
+        int mas = autoProjectByOa.synchronizationProjectByOa(ddProjectService,sysUserFeignService, ddSync.getUrl());
         if (mas != -1) {
             return DdResult.ok("更新成功" + "本次更新" + mas + "条");
         }
-        return DdResult.ok("更新失败");
+        return DdResult.fail("更新失败");
     }
 
-    //OA项目同步接口
+    //同步接口数据回显接口
     @ApiOperation("同步接口数据回显接口")
     @GetMapping("/getSynchronizationUrl/{id}")
     public DdResult getSynchronizationUrl(@PathVariable("id") String id) {
         DdSync ddSync = syncService.getById(id);
-        if (null == ddSync) {
+        if (null != ddSync) {
             return DdResult.ok(ddSync);
         }
-        return DdResult.ok("更新失败");
+        return DdResult.fail("更新失败");
     }
 
-    //更新OA项目同步接口
-    @ApiOperation("更新OA项目同步接口")
-    @GetMapping("/updateSynchronizationProjectByOa/{url}")
-    public DdResult updateSynchronizationProjectByOa(@PathVariable("url") String url) {
+    //更新项目同步接口
+    @ApiOperation("更新项目同步接口")
+    @GetMapping("/updateSynchronizationUrl/{id}/{url}")
+    public DdResult updateSynchronizationUrl(@PathVariable("id") String id, @PathVariable("url") String url) {
         DdSync ddSync = syncService.getById("1");
         ddSync.setUrl(url);
         ddSync.setUpdateTime(DateUtil.getTime());
@@ -78,10 +83,9 @@ public class DdSyncController {
     @ApiOperation("现场版本数据同步接口")
     @GetMapping("/synchronizationProjectByLocale")
     public DdResult synchronizationProjectByLocale() {
-
-
         return DdResult.ok("更新失败");
     }
+
 
 }
 

@@ -66,3 +66,4 @@ minio:
   bucket: test
 swagger:
   enabled: true
+version: 1

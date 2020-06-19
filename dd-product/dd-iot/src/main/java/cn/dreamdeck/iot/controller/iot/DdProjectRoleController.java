@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.iot;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author lxn
- * @since 2020-06-18
+ * @since 2020-06-17
  */
 @RestController
-@RequestMapping("/dd-doc-type")
-public class DdDocTypeController {
+@RequestMapping("/dd-project-role")
+public class DdProjectRoleController {
 
 }
 

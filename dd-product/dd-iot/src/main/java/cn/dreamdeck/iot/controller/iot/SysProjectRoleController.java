@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.iot;
 
 
 import cn.dreamdeck.common.result.DdResult;
@@ -9,12 +9,13 @@ import cn.dreamdeck.iot.service.DdProjectTeamService;
 import cn.dreamdeck.iot.service.SysProjectRoleService;
 import cn.dreamdeck.model.iot.DdProject;
 import cn.dreamdeck.model.iot.DdProjectRole;
-import cn.dreamdeck.model.iot.DdProjectTeam;
 import cn.dreamdeck.model.iot.SysProjectRole;
+import cn.dreamdeck.model.iot.vo.DdProjectRoleVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,9 @@ public class SysProjectRoleController {
     @Autowired
     private AuthContextHolder authContextHolder;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     //分类列表
     @ApiOperation(value = "根据项目id返回权限列表")
     @GetMapping("/getAllRoleByProjectId/{projectId}")
@@ -60,7 +64,7 @@ public class SysProjectRoleController {
 
         ArrayList<Integer> roleList = new ArrayList<>();
         projectRoleList.stream().forEach(f -> {
-            roleList.add(f.getProjectRoleId());
+            roleList.add(f.getSysRoleId());
         });
         List<SysProjectRole> sysProjectRoles = (List) sysProjectRoleService.listByIds(roleList);
 
@@ -71,10 +75,12 @@ public class SysProjectRoleController {
 
     //添加
     @ApiOperation(value = "添加权限列表")
-    @GetMapping("/saveRoleProject/{projectId}/{roleId}")
-    public DdResult saveRoleProject(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, HttpServletRequest request) {
+    @RequestMapping(value = "/saveRoleProject/{projectId}/{roleName}/{menuIds}", method = RequestMethod.PUT)
+    public DdResult saveRoleProject(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleName", required = true) String roleName, @PathVariable(value = "menuIds", required = true) String menuIds, HttpServletRequest request) {
 
-        String userId = authContextHolder.getUserId(request);
+        String token = authContextHolder.getToken(request);
+        String userKey = "user:login:" + token;
+        String userId = (String) redisTemplate.opsForValue().get(userKey);
         if (StringUtils.isEmpty(userId)) {
 
             return DdResult.fail("登录异常");
@@ -85,7 +91,7 @@ public class SysProjectRoleController {
             return DdResult.fail("没有权限");
         }
 
-        boolean save = ddProjectRoleService.save(new DdProjectRole().setProjectId(Integer.valueOf(projectId)).setProjectRoleId(Integer.valueOf(roleId)));
+        boolean save = sysProjectRoleService.saveRole(projectId, roleName, menuIds);
 
         if (save) {
             return DdResult.ok("添加成功");
@@ -95,11 +101,12 @@ public class SysProjectRoleController {
 
     //删除
     @ApiOperation(value = "删除权限列表")
-    @RequestMapping(value = "/delRoleProject/{projectId}/{roleId}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delRoleProject/{projectId}/{roleId}", method = RequestMethod.DELETE)
     public DdResult delRoleProject(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, HttpServletRequest request) {
 
-        String userId = authContextHolder.getUserId(request);
-
+        String token = authContextHolder.getToken(request);
+        String userKey = "user:login:" + token;
+        String userId = (String) redisTemplate.opsForValue().get(userKey);
         if (StringUtils.isEmpty(userId)) {
             return DdResult.fail("登录异常");
         }
@@ -107,18 +114,29 @@ public class SysProjectRoleController {
         if (Integer.valueOf(userId) != ddProject.getUserId()) {
             return DdResult.fail("没有权限");
         }
-        //删除人员--------------goto
-        List<DdProjectTeam> ddProjectTeamList = ddProjectTeamService.list(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("role_id", roleId));
-        for (DdProjectTeam ddProjectTeam : ddProjectTeamList) {
-            DdProjectTeam ddProjectTeam1 = new DdProjectTeam();
-            ddProjectTeam.setStatus(1);
-            ddProjectTeamService.updateById(ddProjectTeam1);
-        }
-        boolean b = ddProjectRoleService.removeById(Integer.valueOf(projectId));
-        if (b) {
+
+        boolean del = sysProjectRoleService.delRole(projectId, roleId);
+        if (del) {
             return DdResult.ok("删除成功");
         }
         return DdResult.ok("删除失败");
+    }
+
+    //分类列表
+    @ApiOperation(value = "根据项目id返回用户权限")
+    @GetMapping("/getAllRoleByUserId/{projectId}")
+    public DdResult getAllRoleByUserId(@PathVariable(value = "projectId", required = true) String projectId,HttpServletRequest request) {
+
+        String token = authContextHolder.getToken(request);
+        String userKey = "user:login:" + token;
+        String userId = (String) redisTemplate.opsForValue().get(userKey);
+
+        if (StringUtils.isEmpty(userId)) {
+            return DdResult.fail("登录异常");
+        }
+
+        DdProjectRoleVo ddProjectRoleVo = sysProjectRoleService.getAllRoleByUserId(projectId,userId);
+        return DdResult.ok(ddProjectRoleVo);
     }
 
 

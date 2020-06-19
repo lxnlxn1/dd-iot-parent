@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(value  = "dd-user", fallback = SysUserFeignServiceClientImpl.class)
+@FeignClient(value = "dd-user", fallback = SysUserFeignServiceClientImpl.class)
 public interface SysUserFeignService {
 
     /**
@@ -21,7 +21,7 @@ public interface SysUserFeignService {
      * @return
      */
     @GetMapping("/user/query/{userId}")
-     DdResult query(@PathVariable("userId") String userId) ;
+    DdResult query(@PathVariable("userId") String userId);
 
     @ApiOperation(value = "返回所有人员Id与姓名/联系方式")
     @GetMapping("/user/getAll")
@@ -30,4 +30,9 @@ public interface SysUserFeignService {
 
     @GetMapping("/user/getUserByIds/{userIds}")
     List<SysUser> getUserByIds(@PathVariable("userIds") String userIds);
+
+    //OA用户同步接口
+    @ApiOperation("根据用户ID获取用户信息")
+    @GetMapping("/user/getUserById/{userId}")
+    SysUser getUserById(@PathVariable("userId") String OldUserId);
 }

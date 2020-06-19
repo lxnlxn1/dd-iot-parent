@@ -4,6 +4,7 @@ import cn.dreamdeck.iot.mapper.DdProjectRoleMapper;
 import cn.dreamdeck.iot.service.DdProjectRoleService;
 import cn.dreamdeck.model.iot.DdProjectRole;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DdProjectRoleServiceImpl extends ServiceImpl<DdProjectRoleMapper, DdProjectRole> implements DdProjectRoleService {
+
 
 }

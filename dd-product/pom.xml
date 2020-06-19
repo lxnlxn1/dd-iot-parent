@@ -39,7 +39,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>4.6.3</version>
+            <version>4.6.8</version>
         </dependency>
         <!--web-->
         <dependency>

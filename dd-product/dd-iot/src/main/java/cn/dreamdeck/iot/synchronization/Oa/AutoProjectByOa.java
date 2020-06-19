@@ -4,19 +4,22 @@ package cn.dreamdeck.iot.synchronization.Oa;
 import cn.dreamdeck.common.data.DateUtil;
 import cn.dreamdeck.iot.service.DdProjectService;
 import cn.dreamdeck.model.iot.DdProject;
+import cn.dreamdeck.model.user.SysUser;
 import cn.dreamdeck.service.http.HttpRequest;
+import cn.dreamdeck.user.client.SysUserFeignService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.List;
+
 public class AutoProjectByOa {
 
 
-    public int synchronizationProjectByOa(DdProjectService ddProjectService) {
+    public int synchronizationProjectByOa(DdProjectService ddProjectService, SysUserFeignService sysUserFeignService, String url) {
 
 
-        String jsonStrBody = HttpRequest.sendGet("http://oa.dreamdeck.cn/project/item/all", null);
+        String jsonStrBody = HttpRequest.sendGet(url, null);
         List<RojectRVo> receiveList = null;
         int i = 0;
         try {
@@ -43,8 +46,8 @@ public class AutoProjectByOa {
                         ddProject1.setProjectImg("http://file.dreamdeck.cn/app/icons//website/logo/2019-05/23/5d3295c4-a8d3-4779-b614-b1a7dac0db09.gif");
                         ddProject1.setProjectSite("项目地址");
                         ddProject1.setUserId(rojectRVo.getUserId());
-                        //远程调用
-                        ddProject1.setUserName("项目人员姓名");
+                        SysUser userById = sysUserFeignService.getUserById(rojectRVo.getUserId().toString());
+                        ddProject1.setUserName(userById.getUsername());
                         ddProject1.setCreateTime(DateUtil.getTime());
                         ddProject1.setUpdateTime(DateUtil.getTime());
                         ddProject1.setItemId(rojectRVo.getItemId());
@@ -52,7 +55,7 @@ public class AutoProjectByOa {
                         ddProject1.setEndDate(rojectRVo.getEndDate());
                         ddProject1.setDelFlag(rojectRVo.getDelFlag());
                         ddProjectService.save(ddProject1);
-                        i += i;
+                        ++i;
                     }
 
 

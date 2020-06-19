@@ -35,6 +35,9 @@ public class SysProjectRole implements Serializable {
     @ApiModelProperty(value = "角色描述")
     private String roleDesc;
 
+
+    private Integer projectId;
+
     private String delFlag;
 
     private String createTime;

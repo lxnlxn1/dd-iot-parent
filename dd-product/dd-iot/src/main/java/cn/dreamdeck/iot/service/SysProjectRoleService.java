@@ -1,6 +1,7 @@
 package cn.dreamdeck.iot.service;
 
 import cn.dreamdeck.model.iot.SysProjectRole;
+import cn.dreamdeck.model.iot.vo.DdProjectRoleVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysProjectRoleService extends IService<SysProjectRole> {
 
+    boolean saveRole(String projectId, String roleName, String menuIds);
+
+    boolean delRole(String projectId, String roleId);
+
+
+    DdProjectRoleVo getAllRoleByUserId(String projectId, String userId);
 }

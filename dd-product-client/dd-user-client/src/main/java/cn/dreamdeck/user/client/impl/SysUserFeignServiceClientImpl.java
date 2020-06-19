@@ -27,4 +27,9 @@ public class SysUserFeignServiceClientImpl implements SysUserFeignService {
     public List<SysUser> getUserByIds(String userIds) {
         return null;
     }
+
+    @Override
+    public SysUser getUserById(String userId) {
+        return null;
+    }
 }

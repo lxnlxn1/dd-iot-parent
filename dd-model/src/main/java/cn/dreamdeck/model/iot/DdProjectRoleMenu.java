@@ -16,35 +16,31 @@ import java.io.Serializable;
  * </p>
  *
  * @author lxn
- * @since 2020-06-15
+ * @since 2020-06-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="DdProjectTeam对象", description="")
-public class DdProjectTeam implements Serializable {
+@ApiModel(value="DdProjectRoleMenu对象", description="")
+public class DdProjectRoleMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "team_log_id", type = IdType.AUTO)
-    private Integer teamLogId;
+    @ApiModelProperty(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    @ApiModelProperty(value = "项目id")
+    @ApiModelProperty(value = "项目Id")
     private Integer projectId;
 
-    private String createTime;
-
-    private String updateTime;
-
-    @ApiModelProperty(value = "用户id")
-    private Integer userId;
-
-    private String status;
-
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "权限ID")
     private Integer roleId;
 
+    @ApiModelProperty(value = "菜单列表")
+    private Integer menuId;
 
+    @ApiModelProperty(value = "系统版本")
+    private Integer version;
 
 
 }

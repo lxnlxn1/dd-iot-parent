@@ -1,6 +1,6 @@
 package cn.dreamdeck.iot.service;
 
-import cn.dreamdeck.model.iot.DdProjectRole;
+import cn.dreamdeck.model.iot.DdProjectRoleMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,9 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author lxn
- * @since 2020-06-17
+ * @since 2020-06-19
  */
-public interface DdProjectRoleService extends IService<DdProjectRole> {
-
+public interface DdProjectRoleMenuService extends IService<DdProjectRoleMenu> {
 
 }

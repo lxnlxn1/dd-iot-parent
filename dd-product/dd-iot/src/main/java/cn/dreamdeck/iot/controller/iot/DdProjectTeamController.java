@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.iot;
 
 
 import cn.dreamdeck.common.data.DateUtil;
@@ -85,7 +85,7 @@ public class DdProjectTeamController {
     public DdResult saveProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
 
 
-        String userIdLogin = authContextHolder.getUserId(request);
+        String userIdLogin = authContextHolder.getToken(request);
 
         if (StringUtils.isEmpty(userIdLogin)) {
             return DdResult.fail("登录异常");
@@ -96,7 +96,7 @@ public class DdProjectTeamController {
             return DdResult.fail("没有权限");
         }
 
-        boolean save = ddProjectTeamService.save(new DdProjectTeam().setProjectId(Integer.valueOf(projectId)).setRoleId(Integer.valueOf(roleId)).setUserId(Integer.valueOf(userId)).setStatus(0).setCreateTime(DateUtil.getTime()));
+        boolean save = ddProjectTeamService.save(new DdProjectTeam().setProjectId(Integer.valueOf(projectId)).setRoleId(Integer.valueOf(roleId)).setUserId(Integer.valueOf(userId)).setStatus("0").setCreateTime(DateUtil.getTime()));
         if (save) {
             return DdResult.ok("添加成功");
         }
@@ -109,7 +109,7 @@ public class DdProjectTeamController {
     public DdResult delProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
 
 
-        String userIdLogin = authContextHolder.getUserId(request);
+        String userIdLogin = authContextHolder.getToken(request);
 
 
         if (StringUtils.isEmpty(userIdLogin)) {
@@ -123,7 +123,7 @@ public class DdProjectTeamController {
 
         DdProjectTeam ddProjectTeam = ddProjectTeamService.getOne(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("user_id", userId).eq("role_id", roleId));
 
-        ddProjectTeam.setStatus(1);
+        ddProjectTeam.setStatus("1");
 
         boolean b = ddProjectTeamService.updateById(ddProjectTeam);
 

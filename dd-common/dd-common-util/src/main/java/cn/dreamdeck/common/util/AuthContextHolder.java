@@ -36,7 +36,7 @@ public class AuthContextHolder {
      * @return
      */
     // 获取用户Id
-    public String getUserId(HttpServletRequest request) {
+    public String getToken(HttpServletRequest request) {
         // 用户信息存在redis
         String token = "";
         // 在登录成功的时候，将token 分别放入了，cookie，header 中。

@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.iot;
 
 
 import cn.dreamdeck.common.result.DdResult;
@@ -55,7 +55,7 @@ public class DdProjectController {
     public DdResult getProjectPageVo(@PathVariable(value = "current") String current, @PathVariable(value = "limit") String limit,@RequestParam(value = "ddProjectVo",required = false) DdProjectVo ddProjectVo, HttpServletRequest request) {
 
 
-        String token = authContextHolder.getUserId(request);
+        String token = authContextHolder.getToken(request);
         String userKey = "user:login:" + token;
         String userId = (String) redisTemplate.opsForValue().get(userKey);
         if (token == null) {
@@ -129,12 +129,8 @@ public class DdProjectController {
     public DdResult updateProject(@PathVariable("projectId") String projectId, @RequestBody DdProjectVo ddProjectVo) {
 
         DdProject ddProject = ddProjectService.getById(projectId);
-
-
         String projectSite = ddProjectVo.getProjectSite();
-
         String projectDesc = ddProjectVo.getProjectDesc();
-
         if (!StringUtils.isEmpty(projectSite)) {
             ddProject.setProjectSite(projectSite);
         }
@@ -142,8 +138,6 @@ public class DdProjectController {
         if (!StringUtils.isEmpty(projectDesc)) {
             ddProject.setProjectSite(projectDesc);
         }
-
-
         boolean b = ddProjectService.updateById(ddProject);
         if (b) {
             return DdResult.ok("更新成功");

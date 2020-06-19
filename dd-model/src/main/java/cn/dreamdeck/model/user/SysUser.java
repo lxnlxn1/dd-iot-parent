@@ -31,7 +31,7 @@ public class SysUser implements Serializable {
 	@TableId(value = "user_id", type = IdType.AUTO)
 	private Integer userId;
 
-	private String oldId;
+	private Integer oldId;
 
 	private Integer companyId;
 
@@ -39,7 +39,6 @@ public class SysUser implements Serializable {
 
 	private String password;
 
-	private String salt;
 
 	private String phone;
 

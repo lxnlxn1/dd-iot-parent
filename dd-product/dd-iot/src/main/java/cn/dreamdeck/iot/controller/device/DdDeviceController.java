@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.controller;
+package cn.dreamdeck.iot.controller.device;
 
 
 import cn.dreamdeck.common.result.DdResult;
@@ -94,8 +94,6 @@ public class DdDeviceController {
     @ApiOperation(value = "根据设备id，查询设备详情")
     @PostMapping("/getDeviceVo/{deviceId}")
     public DdResult getDeviceVo(@PathVariable(value = "deviceId", required = true) String deviceId) {
-
-
         DdDeviceVo ddDeviceVo = ddDeviceService.getDeviceVo(deviceId);
         if (ddDeviceVo != null) {
             return DdResult.ok(ddDeviceVo);
