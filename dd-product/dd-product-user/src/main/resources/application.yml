@@ -7,3 +7,6 @@ spring:
     nacos:
       discovery:
         server-addr: 192.168.1.96:8848
+        naming:
+          log:
+            level: warn

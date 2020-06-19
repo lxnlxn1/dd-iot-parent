@@ -15,10 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -47,6 +44,9 @@ public class DdProjectTeamController {
     @Autowired
     private DdProjectService projectService;
 
+    @Autowired
+    private AuthContextHolder authContextHolder;
+
 
     //查询项目人员
     @ApiOperation(value = "查询项目人员")
@@ -55,39 +55,37 @@ public class DdProjectTeamController {
 
         List<DdProjectTeam> list = ddProjectTeamService.list(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("status", 0));
 
-        String userIds = null;
+        StringBuffer userIds = new StringBuffer();
         for (DdProjectTeam ddProjectTeam : list) {
+            System.out.println(ddProjectTeam.getUserId());
 
-            userIds += ddProjectTeam.getUserId() + ",";
-
+              userIds.append(ddProjectTeam.getUserId() + ",");
         }
-        List<SysUser> sysUserList = sysUserFeignService.getUserByIds(userIds);
+        List<SysUser> sysUserList = sysUserFeignService.getUserByIds(userIds.toString());
         return DdResult.ok(sysUserList);
     }
 
     //查询项目各工种人员
-    @ApiOperation(value = "查询项目各工种人员")
+    @ApiOperation(value = "查询项目各类别人员")
     @GetMapping("/getProjectTeamById/{projectId}/{roleId}")
     public DdResult getrojectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId) {
 
         List<DdProjectTeam> projectTeams = ddProjectTeamService.list(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("status", 0).eq("role_id", roleId));
-        String userIds = null;
+        StringBuffer userIds = new StringBuffer();;
         for (DdProjectTeam ddProjectTeam : projectTeams) {
-
-            userIds += ddProjectTeam.getUserId() + ",";
-
+            userIds.append(ddProjectTeam.getUserId() + ",");
         }
-        List<SysUser> sysUserList = sysUserFeignService.getUserByIds(userIds);
+        List<SysUser> sysUserList = sysUserFeignService.getUserByIds(userIds.toString());
         return DdResult.ok(sysUserList);
     }
 
     //添加项目各工种人员
-    @ApiOperation(value = "添加项目各工种人员")
-    @GetMapping("/saveProjectTeamById/{projectId}/{roleId}/{userId}")
+    @ApiOperation(value = "添加项目各类别人员")
+    @RequestMapping(value = "/saveProjectTeamById/{projectId}/{roleId}/{userId}",method = RequestMethod.PUT)
     public DdResult saveProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
 
 
-        String userIdLogin = AuthContextHolder.getUserId(request);
+        String userIdLogin = authContextHolder.getUserId(request);
 
         if (StringUtils.isEmpty(userIdLogin)) {
             return DdResult.fail("登录异常");
@@ -106,12 +104,12 @@ public class DdProjectTeamController {
     }
 
     //删除项目各工种人员
-    @ApiOperation(value = "删除项目各工种人员")
-    @GetMapping("/delProjectTeamById/{projectId}/{roleId}/{userId}")
+    @ApiOperation(value = "删除项目各类别人员")
+    @RequestMapping(value = "/delProjectTeamById/{projectId}/{roleId}/{userId}",method = RequestMethod.DELETE)
     public DdResult delProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
 
 
-        String userIdLogin = AuthContextHolder.getUserId(request);
+        String userIdLogin = authContextHolder.getUserId(request);
 
 
         if (StringUtils.isEmpty(userIdLogin)) {

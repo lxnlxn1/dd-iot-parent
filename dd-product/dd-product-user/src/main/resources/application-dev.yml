@@ -46,3 +46,5 @@ feign:
       default:
         readTimeout: 3000
         connectTimeout: 1000
+swagger:
+  enabled: true

@@ -1,6 +1,8 @@
 package cn.dreamdeck.model.iot.vo;
 
 
+import cn.dreamdeck.model.iot.SysDeviceBrand;
+import cn.dreamdeck.model.iot.SysDeviceModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,13 +32,20 @@ public class DdDeviceVo implements Serializable {
     private Integer classifyId;
 
     @ApiModelProperty(value = "设备品牌ID")
-    private String brandId;
+    private Integer brandId;
+
+    @ApiModelProperty(value = "设备品牌")
+    private SysDeviceBrand sysDeviceBrand;
+
+
 
     @ApiModelProperty(value = "设备型号ID")
-    private String modelId;
+    private Integer modelId;
 
-    @ApiModelProperty(value = "类别ID")
-    private Integer typeId;
+    @ApiModelProperty(value = "设备型号")
+    private SysDeviceModel  sysDeviceModel;
+
+
 
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
@@ -65,6 +74,11 @@ public class DdDeviceVo implements Serializable {
 
     @ApiModelProperty(value = "安装时间")
     private String createTime;
+
+    @ApiModelProperty(value = "安装人员")
+    private String installUserName;
+
+
 
 
 }

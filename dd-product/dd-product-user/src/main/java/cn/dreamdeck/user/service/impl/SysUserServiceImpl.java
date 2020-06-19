@@ -33,9 +33,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public SysUser login(SysUser sysUser) {
-
         String username = sysUser.getUsername();
-
         String password = sysUser.getPassword();
 
         SysUser sysUser1 = baseMapper.selectOne(new QueryWrapper<SysUser>().eq("username",username).eq("password",password));
@@ -59,7 +57,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public SysUser getUser(String userId) {
 
-        SysUser sysUser = baseMapper.selectOne(new QueryWrapper<SysUser>().eq("user_id", userId).eq("lock_flag", 1).eq("del_flag", 1));
+        SysUser sysUser = baseMapper.selectOne(new QueryWrapper<SysUser>().eq("user_id", userId).eq("lock_flag", 0).eq("del_flag", 0));
 
         return sysUser;
     }

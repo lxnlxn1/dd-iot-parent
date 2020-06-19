@@ -1,4 +1,4 @@
-package cn.dreamdeck.iot.synchronization;
+package cn.dreamdeck.iot.synchronization.Locale;
 
 
 import java.sql.Connection;

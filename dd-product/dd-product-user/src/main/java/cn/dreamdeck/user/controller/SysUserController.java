@@ -40,16 +40,18 @@ public class SysUserController {
     @Autowired
     private SysRoleService sysRoleService;
 
+    AuthContextHolder authContextHolder = new AuthContextHolder();
+
     /**
      * 登录
      */
     @PostMapping("/passport/login")
-    public DdResult login(SysUser sysUser) {
+    public DdResult login(@RequestBody SysUser sysUser) {
         SysUser info = sysUserService.login(sysUser);
         if (info != null) {
             String token = UUID.randomUUID().toString().replaceAll("-", "");
             HashMap<String, Object> map = new HashMap<>();
-            map.put("token", "admin");
+            map.put("token", token);
             redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + token, info.getUserId().toString(), RedisConst.USERKEY_TIMEOUT, TimeUnit.SECONDS);
             return DdResult.ok(map);
         } else {
@@ -57,21 +59,24 @@ public class SysUserController {
         }
     }
 
-
     @GetMapping("/passport/info")
     public DdResult info(HttpServletRequest request) {
-        String userId = AuthContextHolder.getUserId(request);
+        String token = authContextHolder.getUserId(request);
+        String userKey = "user:login:" + token;
+        String userId = (String) redisTemplate.opsForValue().get(userKey);
         SysUser sysUser = sysUserService.getUser(userId);
-
         List<SysRole> roleList = sysRoleService.getRoleByUserId(userId);
-        StringBuffer roleName = null;
+        StringBuffer roleName = new StringBuffer();
         for (SysRole sysRole : roleList) {
-            roleName.append(sysRole.getRoleName() + "<br/>");
+            roleName.append(sysRole.getRoleName());
         }
-        HashMap<String, Object> map = new HashMap<>();
+        if (null==sysUser){
+            return DdResult.fail("登录信息失效或用户已停用");
+        }
+        Map<String, String> map = new HashMap<>();
         map.put("name", sysUser.getUsername());
         map.put("avatar", sysUser.getAvatar());
-        map.put("roles", roleName);
+        map.put("roles", roleName.toString());
         return DdResult.ok(map);
     }
 
@@ -83,9 +88,14 @@ public class SysUserController {
      */
     @GetMapping("/passport/logout")
     public DdResult logout(HttpServletRequest request) {
-        redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + request.getHeader("token"));
+        String userId = authContextHolder.getUserId(request);
+
+        redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + "token");
         return DdResult.ok();
     }
+
+    
+
 
     /**
      * 根据用户id查询权限
@@ -115,7 +125,7 @@ public class SysUserController {
         return DdResult.ok(sysUserList);
     }
 
-    @ApiOperation(value = "根据用户is集合数组返回数据")
+    @ApiOperation(value = "根据用户ids集合数组返回数据")
     @GetMapping("/getUserByIds/{userIds}")
     List<SysUser> getUserByIds(@PathVariable("userIds") String userIds) {
 

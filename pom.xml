@@ -16,7 +16,6 @@
     </modules>
 
 
-
     <description>物联网平台</description>
 
     <parent>
@@ -89,7 +88,6 @@
             </dependency>
 
         </dependencies>
-
 
 
     </dependencyManagement>

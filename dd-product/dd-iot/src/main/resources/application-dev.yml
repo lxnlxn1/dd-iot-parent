@@ -59,3 +59,10 @@ feign:
       default:
         readTimeout: 3000
         connectTimeout: 1000
+minio:
+  url: http://192.168.1.96:9000
+  access: minioadmin
+  secret: minioadmin
+  bucket: test
+swagger:
+  enabled: true

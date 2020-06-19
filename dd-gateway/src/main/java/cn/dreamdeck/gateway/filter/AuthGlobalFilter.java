@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -27,7 +26,7 @@ import java.util.List;
  * @author mqx
  * @date 2020/3/25 14:49
  */
-@Component // 注入spring容器
+
 public class AuthGlobalFilter implements GlobalFilter {
 
     @Value("${authUrls.url}")

@@ -16,10 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -34,7 +31,7 @@ import java.util.List;
  * @since 2020-06-17
  */
 
-@Api(produces = "项目角色表")
+@Api(description = "项目角色表")
 @RestController
 @RequestMapping("/iot/projectRole")
 public class SysProjectRoleController {
@@ -50,6 +47,9 @@ public class SysProjectRoleController {
 
     @Autowired
     private DdProjectTeamService ddProjectTeamService;
+
+    @Autowired
+    private AuthContextHolder authContextHolder;
 
     //分类列表
     @ApiOperation(value = "根据项目id返回权限列表")
@@ -74,9 +74,9 @@ public class SysProjectRoleController {
     @GetMapping("/saveRoleProject/{projectId}/{roleId}")
     public DdResult saveRoleProject(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, HttpServletRequest request) {
 
-        String userId = AuthContextHolder.getUserId(request);
-
+        String userId = authContextHolder.getUserId(request);
         if (StringUtils.isEmpty(userId)) {
+
             return DdResult.fail("登录异常");
         }
 
@@ -95,10 +95,10 @@ public class SysProjectRoleController {
 
     //删除
     @ApiOperation(value = "删除权限列表")
-    @GetMapping("/delRoleProject/{projectId}/{roleId}")
+    @RequestMapping(value = "/delRoleProject/{projectId}/{roleId}",method = RequestMethod.DELETE)
     public DdResult delRoleProject(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, HttpServletRequest request) {
 
-        String userId = AuthContextHolder.getUserId(request);
+        String userId = authContextHolder.getUserId(request);
 
         if (StringUtils.isEmpty(userId)) {
             return DdResult.fail("登录异常");

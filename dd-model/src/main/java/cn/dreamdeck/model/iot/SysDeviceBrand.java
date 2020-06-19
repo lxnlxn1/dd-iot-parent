@@ -26,8 +26,8 @@ public class SysDeviceBrand implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "brand_id", type = IdType.ID_WORKER_STR)
-    private String brandId;
+    @TableId(value = "brand_id", type = IdType.AUTO)
+    private Integer brandId;
 
     @ApiModelProperty(value = "分类ID")
     private Integer classifyId;

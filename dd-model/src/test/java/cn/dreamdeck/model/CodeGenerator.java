@@ -49,11 +49,8 @@ public class CodeGenerator {
         mpg.setDataSource(dsc);
         // 4、包配置
         PackageConfig pc = new PackageConfig();
-       // pc.setModuleName("dd-model"); //模块名
         pc.setParent("cn.dreamdeck.model.iot");
-        //com.atguigu.eduservice
         pc.setController("controller");
-        //com.atguigu.eduservice.controller
         pc.setEntity("entity");
         pc.setService("service");
         pc.setMapper("mapper");
@@ -61,7 +58,7 @@ public class CodeGenerator {
 
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("dd_project_role");
+        strategy.setInclude("dd_sync");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀
 

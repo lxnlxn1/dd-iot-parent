@@ -16,7 +16,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lxn
- * @since 2020-06-15
+ * @since 2020-06-18
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -34,22 +34,14 @@ public class DdDevice implements Serializable {
     private String upsideId;
 
     @ApiModelProperty(value = "项目ID")
-    private String projectId;
+    private Integer projectId;
 
-    @ApiModelProperty(value = "用户id")
-    private Integer userId;
+    private Integer modelId;
+
+    private Integer brandId;
 
     @ApiModelProperty(value = "分类ID")
     private Integer classifyId;
-
-    @ApiModelProperty(value = "设备品牌ID")
-    private String brandId;
-
-    @ApiModelProperty(value = "设备型号ID")
-    private String modelId;
-
-    @ApiModelProperty(value = "类别ID")
-    private Integer typeId;
 
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
@@ -78,6 +70,12 @@ public class DdDevice implements Serializable {
 
     @ApiModelProperty(value = "安装时间")
     private String createTime;
+
+    @ApiModelProperty(value = "安装人员Id")
+    private Integer installUserId;
+
+    @ApiModelProperty(value = "安装人员用户名")
+    private String installUserName;
 
 
 }

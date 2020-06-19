@@ -16,9 +16,11 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
-    SysUser login(SysUser sysUser);
+
 
     List<SysRole> getRole(String userId);
 
     SysUser getUser(String userId);
+
+    SysUser login(SysUser sysUser);
 }

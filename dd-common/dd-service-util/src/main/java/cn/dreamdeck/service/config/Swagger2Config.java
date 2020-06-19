@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -59,11 +60,13 @@ public class Swagger2Config {
     public Docket adminApiConfig(){
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("adminApi")
+                .groupName("dd-iot")
                 .apiInfo(adminApiInfo())
                 .select()
                 //只显示admin路径下的页面
-                .paths(Predicates.and(PathSelectors.regex("/admin/.*")))
+                //扫描包路径
+                .apis(RequestHandlerSelectors.basePackage("cn.dreamdeck"))
+                .paths(PathSelectors.any())
                 .build();
 
     }
