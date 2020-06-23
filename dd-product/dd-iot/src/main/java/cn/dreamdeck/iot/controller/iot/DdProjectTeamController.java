@@ -52,9 +52,7 @@ public class DdProjectTeamController {
     @ApiOperation(value = "查询项目人员")
     @GetMapping("/getProjectUserById/{projectId}")
     public DdResult getProjectById(@PathVariable(value = "projectId", required = true) String projectId) {
-
         List<DdProjectTeam> list = ddProjectTeamService.list(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("status", 0));
-
         StringBuffer userIds = new StringBuffer();
         for (DdProjectTeam ddProjectTeam : list) {
             System.out.println(ddProjectTeam.getUserId());
@@ -85,17 +83,15 @@ public class DdProjectTeamController {
     public DdResult saveProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
 
 
-        String userIdLogin = authContextHolder.getToken(request);
+        String userIdLogin = authContextHolder.getUserId(request);
 
         if (StringUtils.isEmpty(userIdLogin)) {
             return DdResult.fail("登录异常");
         }
-
         DdProject ddProject = projectService.getById(projectId);
         if (Integer.valueOf(userIdLogin) != ddProject.getUserId()) {
             return DdResult.fail("没有权限");
         }
-
         boolean save = ddProjectTeamService.save(new DdProjectTeam().setProjectId(Integer.valueOf(projectId)).setRoleId(Integer.valueOf(roleId)).setUserId(Integer.valueOf(userId)).setStatus("0").setCreateTime(DateUtil.getTime()));
         if (save) {
             return DdResult.ok("添加成功");
@@ -107,11 +103,7 @@ public class DdProjectTeamController {
     @ApiOperation(value = "删除项目各类别人员")
     @RequestMapping(value = "/delProjectTeamById/{projectId}/{roleId}/{userId}",method = RequestMethod.DELETE)
     public DdResult delProjectTeamById(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleId", required = true) String roleId, @PathVariable(value = "userId", required = true) String userId, HttpServletRequest request) {
-
-
-        String userIdLogin = authContextHolder.getToken(request);
-
-
+        String userIdLogin = authContextHolder.getUserId(request);
         if (StringUtils.isEmpty(userIdLogin)) {
             return DdResult.fail("登录异常");
         }
@@ -120,20 +112,13 @@ public class DdProjectTeamController {
         if (Integer.valueOf(userIdLogin) != ddProject.getUserId()) {
             return DdResult.fail("没有权限");
         }
-
         DdProjectTeam ddProjectTeam = ddProjectTeamService.getOne(new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("user_id", userId).eq("role_id", roleId));
-
         ddProjectTeam.setStatus("1");
-
         boolean b = ddProjectTeamService.updateById(ddProjectTeam);
-
         if (b) {
             return DdResult.ok("添加成功");
         }
         return DdResult.ok("添加失败");
     }
-
-
-
 }
 

@@ -44,9 +44,5 @@ public class SysDeviceBrand implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private String createTime;
 
-    private String var1;
-
-    private String var2;
-
 
 }

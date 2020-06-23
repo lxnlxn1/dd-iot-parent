@@ -47,18 +47,16 @@ public class DdProjectController {
     private AuthContextHolder authContextHolder;
 
 
-
-
     //查询项目
     @ApiOperation(value = "根据用户id，查询项目数据（分页，查询）")
     @PostMapping("/getProjectPageVo/{current}/{limit}")
-    public DdResult getProjectPageVo(@PathVariable(value = "current") String current, @PathVariable(value = "limit") String limit,@RequestParam(value = "ddProjectVo",required = false) DdProjectVo ddProjectVo, HttpServletRequest request) {
+    public DdResult getProjectPageVo(@PathVariable(value = "current") String current, @PathVariable(value = "limit") String limit, @RequestParam(value = "ddProjectVo", required = false) DdProjectVo ddProjectVo, HttpServletRequest request) {
 
 
-        String token = authContextHolder.getToken(request);
-        String userKey = "user:login:" + token;
-        String userId = (String) redisTemplate.opsForValue().get(userKey);
-        if (token == null) {
+        String userId = authContextHolder.getUserId(request);
+
+
+        if (userId == null) {
             return DdResult.fail("登录信息失效，请从新登录");
         }
         Long current1 = null;
@@ -81,22 +79,22 @@ public class DdProjectController {
         if (ddProjectVo != null) {
 
 
-        if (StringUtils.isEmpty(ddProjectVo.getProjectName())) {
-            wrapper.like("project_name", ddProjectVo.getProjectName());
-        }
+            if (StringUtils.isEmpty(ddProjectVo.getProjectName())) {
+                wrapper.like("project_name", ddProjectVo.getProjectName());
+            }
 
-        if (StringUtils.isEmpty(ddProjectVo.getProjectType())) {
-            wrapper.like("project_type", ddProjectVo.getProjectType());
-        }
+            if (StringUtils.isEmpty(ddProjectVo.getProjectType())) {
+                wrapper.like("project_type", ddProjectVo.getProjectType());
+            }
 
-        if (StringUtils.isEmpty(ddProjectVo.getStatus())) {
-            wrapper.like("status", ddProjectVo.getStatus());
-        }
+            if (StringUtils.isEmpty(ddProjectVo.getStatus())) {
+                wrapper.like("status", ddProjectVo.getStatus());
+            }
 
-        if (StringUtils.isEmpty(ddProjectVo.getProjectSite())) {
-            wrapper.like("project_site", ddProjectVo.getProjectSite());
+            if (StringUtils.isEmpty(ddProjectVo.getProjectSite())) {
+                wrapper.like("project_site", ddProjectVo.getProjectSite());
+            }
         }
-    }
         List<Integer> projectByUserId = projectTeamService.getProjectByUserId(userId);
 
         Integer integer = projectByUserId.get(0);
@@ -144,9 +142,6 @@ public class DdProjectController {
         }
         return DdResult.ok("更新失败");
     }
-
-
-
 
 
 }

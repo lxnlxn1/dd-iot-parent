@@ -27,6 +27,8 @@ public class DdDeviceVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "设备ID")
+    private String deviceId;
 
     @ApiModelProperty(value = "分类ID")
     private Integer classifyId;

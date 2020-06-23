@@ -139,8 +139,7 @@ public class MinioTemplate {
                     return;
                 }
                 res.reset();
-                // res.setContentType(getMimeType(fileName));
-                // https://gitee.com/dolyw/codes/2h1r6avwxumegjs89ztyn86
+
                 res.addHeader("content-Disposition", "inline;filename=" + java.net.URLEncoder.encode(fileName, "UTF-8"));
                 byte[] b = new byte[4096];
                 int i = 0;

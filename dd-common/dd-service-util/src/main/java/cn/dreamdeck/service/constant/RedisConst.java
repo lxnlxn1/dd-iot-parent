@@ -28,6 +28,10 @@ public class RedisConst {
     public static final String PROJECT_USER_KEY_PREFIX = "project:user:";
     public static final int PROJECT_USER_TIMEOUT = 60 * 60 * 24 * 7;//过期时间
 
+    //iot系统权限菜单
+    public static final String PROJECT_MENU_KEY_PREFIX = "project:menu:";
+    public static final int PROJECT_MENU_TIMEOUT = 60 * 60 * 24 * 7;//过期时间
+
 
     //语音垃圾桶
     public static final String DEVICE_TRASH_DATA = "device:trash:data:";

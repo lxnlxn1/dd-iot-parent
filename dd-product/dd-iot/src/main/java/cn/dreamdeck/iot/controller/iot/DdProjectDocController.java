@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ public class DdProjectDocController {
     }
 
     //查询项目文档
-    @ApiOperation(value = "查询项目文档类别")
+    @ApiOperation(value = "查询项目文档")
     @GetMapping("/getProjectDoc/{projectId}/{projectDocType}")
     public DdResult getProjectDocByProjecId(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocType", required = true) String projectDocType) {
 
@@ -57,19 +60,48 @@ public class DdProjectDocController {
         if (null != ddProjectDocList) {
             return DdResult.ok(ddProjectDocList);
         }
-        return DdResult.fail("服务器错误");
+        return DdResult.fail("没有文件");
     }
-
 
 
     //上传文件
     @ApiOperation(value = "上传文件")
-    @PostMapping("/getProjectDoc/{projectId}/{projectDocType}")
-    public DdResult getProjectDocByProjecId(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocType", required = true) String projectDocType,@RequestParam("fileName") MultipartFile file){
+    @PostMapping("/saveProjectDoc/{projectId}/{projectDocTypeId}")
+    public DdResult saveProjectDoc(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocTypeId", required = true) String projectDocTypeId, MultipartFile file) {
 
+        boolean isOk = ddProjectDocService.saveFile(projectId, projectDocTypeId, file);
 
-
+        if (isOk) {
+            return DdResult.ok("上传成功");
+        }
         return DdResult.fail("服务器错误");
+    }
+
+
+    //获取文件流
+    @ApiOperation(value = "获取文件流")
+    @GetMapping("/getProjectDocByName/{fileName}")
+
+    public DdResult getProjectDocByName(@PathVariable(value = "fileName", required = true) String fileName) {
+
+        InputStream inputStream = ddProjectDocService.getProjectDocByName(fileName);
+
+        if (null != inputStream) {
+            return DdResult.ok(inputStream);
+        }
+
+        return DdResult.fail("获取文件流失败");
+    }
+
+    //直接下载文件
+    @ApiOperation(value = "直接下载文件")
+    @GetMapping("/uploadProjectDocByDocId/{projectDocId}")
+
+    public DdResult uploadProjectDocByName(@PathVariable(value = "projectDocId", required = true) String projectDocId, HttpServletRequest request, HttpServletResponse response) {
+
+        ddProjectDocService.uploadProjectDocByName(request,response,projectDocId);
+
+        return DdResult.ok("下载成功");
     }
 
 

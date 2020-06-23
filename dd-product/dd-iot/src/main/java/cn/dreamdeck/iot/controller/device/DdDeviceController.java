@@ -33,8 +33,8 @@ public class DdDeviceController {
 
     //查询设备
     @ApiOperation(value = "根据项目id，查询查询设备（分页，查询）")
-    @PostMapping("/getDevicePageVoByProjectId")
-    public DdResult getTeacherPageVo(@PathVariable("current") String current, @PathVariable("limit") String limit, @PathVariable(value = "projectId", required = true) String projectId, @RequestBody DdDeviceVo ddDeviceVo) {
+    @PostMapping("/getDevicePageVoByProjectId/{current}/{limit}/{projectId}")
+    public DdResult getTeacherPageVo(@PathVariable(value = "current", required = false) String current, @PathVariable(value = "limit", required = false) String limit, @PathVariable(value = "projectId", required = true) String projectId, @RequestBody(required = false) DdDeviceVo ddDeviceVo) {
 
         Long current1 = null;
         Long limit1 = null;
@@ -52,30 +52,34 @@ public class DdDeviceController {
         QueryWrapper<DdDevice> wrapper = new QueryWrapper<>();
         wrapper.eq("project_id", projectId);
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getClassifyId()))
-            wrapper.eq("classify_id", ddDeviceVo.getClassifyId());
+        if (null!=ddDeviceVo){
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getBrandId()))
-            wrapper.eq("brand_id", ddDeviceVo.getBrandId());
+            if (!StringUtils.isEmpty(ddDeviceVo.getClassifyId()))
+                wrapper.eq("classify_id", ddDeviceVo.getClassifyId());
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getDeviceType()))
-            wrapper.eq("device_type", ddDeviceVo.getDeviceType());
+            if (!StringUtils.isEmpty(ddDeviceVo.getBrandId()))
+                wrapper.eq("brand_id", ddDeviceVo.getBrandId());
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getDeviceIp()))
-            wrapper.like("device_ip", ddDeviceVo.getDeviceIp());
+            if (!StringUtils.isEmpty(ddDeviceVo.getDeviceType()))
+                wrapper.eq("device_type", ddDeviceVo.getDeviceType());
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getStatus()))
-            wrapper.eq("status", ddDeviceVo.getStatus());
+            if (!StringUtils.isEmpty(ddDeviceVo.getDeviceIp()))
+                wrapper.like("device_ip", ddDeviceVo.getDeviceIp());
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getLastTime()))
-            wrapper.like("last_time", ddDeviceVo.getLastTime());
+            if (!StringUtils.isEmpty(ddDeviceVo.getStatus()))
+                wrapper.eq("status", ddDeviceVo.getStatus());
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getCreateTime()))
-            wrapper.like("create_time", ddDeviceVo.getCreateTime());
+            if (!StringUtils.isEmpty(ddDeviceVo.getLastTime()))
+                wrapper.like("last_time", ddDeviceVo.getLastTime());
+
+            if (!StringUtils.isEmpty(ddDeviceVo.getCreateTime()))
+                wrapper.like("create_time", ddDeviceVo.getCreateTime());
+
+            if (!StringUtils.isEmpty(ddDeviceVo.getCreateTime()))
+                wrapper.like("install_user_name", ddDeviceVo.getInstallUserName());
+        }
 
 
-        if (!StringUtils.isEmpty(ddDeviceVo.getCreateTime()))
-            wrapper.like("install_user_name", ddDeviceVo.getInstallUserName());
 
         wrapper.orderByDesc("create_time");
 
@@ -99,6 +103,15 @@ public class DdDeviceController {
             return DdResult.ok(ddDeviceVo);
         }
         return DdResult.fail("查询数据为空");
+    }
+
+    //添加设备
+    @ApiOperation(value = "添加设备")
+    @PostMapping("/saveDeviceVo")
+    public DdResult saveDeviceVo(@RequestBody DdDevice ddDevice) {
+
+
+        return DdResult.fail("添加设备失败");
     }
 
 

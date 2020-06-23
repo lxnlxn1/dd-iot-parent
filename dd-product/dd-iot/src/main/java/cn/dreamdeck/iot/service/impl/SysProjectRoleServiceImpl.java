@@ -2,22 +2,19 @@ package cn.dreamdeck.iot.service.impl;
 
 import cn.dreamdeck.common.data.DateUtil;
 import cn.dreamdeck.iot.mapper.SysProjectRoleMapper;
-import cn.dreamdeck.iot.service.DdProjectRoleMenuService;
-import cn.dreamdeck.iot.service.DdProjectRoleService;
-import cn.dreamdeck.iot.service.DdProjectTeamService;
-import cn.dreamdeck.iot.service.SysProjectRoleService;
-import cn.dreamdeck.model.iot.DdProjectRole;
-import cn.dreamdeck.model.iot.DdProjectRoleMenu;
-import cn.dreamdeck.model.iot.DdProjectTeam;
-import cn.dreamdeck.model.iot.SysProjectRole;
-import cn.dreamdeck.model.iot.vo.DdProjectRoleVo;
+import cn.dreamdeck.iot.service.*;
+import cn.dreamdeck.model.iot.*;
+import cn.dreamdeck.service.constant.RedisConst;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,6 +34,12 @@ public class SysProjectRoleServiceImpl extends ServiceImpl<SysProjectRoleMapper,
     private DdProjectRoleMenuService ddProjectRoleMenuService;
     @Autowired
     private DdProjectTeamService ddProjectTeamService;
+
+    @Autowired
+    private DdMenuService ddMenuService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Value("${version}")
     private Integer version;
@@ -94,8 +97,37 @@ public class SysProjectRoleServiceImpl extends ServiceImpl<SysProjectRoleMapper,
 
 
     @Override
-    public DdProjectRoleVo getAllRoleByUserId(String projectId, String userId) {
-        return null;
+    public List<DdMenu> getAllRoleByUserId(String projectId, String userId, String version) {
+        List<DdMenu> ddMenuList = null;
+        if (redisTemplate.hasKey(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId)) {
+            ddMenuList = (List<DdMenu>) redisTemplate.opsForValue().get(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId);
+        } else {
+            List<DdProjectTeam> ddProjectTeamList = ddProjectTeamService.list((new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("user_id", userId)));
+            ArrayList<Integer> integers = new ArrayList<>();
+            for (DdProjectTeam ddProjectTeam : ddProjectTeamList) {
+                integers.add(ddProjectTeam.getRoleId());
+            }
+            //获取菜单IDs
+            ArrayList<Integer> ddProjectRoleMenusIds = new ArrayList<>();
+            // ArrayList<List<DdProjectRoleMenu>> arrayList = new ArrayList<>();
+            for (Integer integer : integers) {
+                List<DdProjectRoleMenu> list = ddProjectRoleMenuService.list(new QueryWrapper<DdProjectRoleMenu>().eq("project_id", projectId).eq("role_id", integer));
+                //arrayList.add(list);
+                list.stream().forEach(f -> {
+                    ddProjectRoleMenusIds.add(f.getMenuId());
+                });
+            }
+            //去重
+            List<Integer> ids = new ArrayList(new HashSet(ddProjectRoleMenusIds));
+            if (ids.size() > 0) {
+                for (int i = 0; i < ids.size(); i++) {
+                    ddMenuList.add(ddMenuService.getOne(new QueryWrapper<DdMenu>().eq("menu_id", i).eq("version", version)));
+                }
+            }
+            redisTemplate.opsForValue().set(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId, ddMenuList);
+        }
+
+        return ddMenuList;
     }
 
 

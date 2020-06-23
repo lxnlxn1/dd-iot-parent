@@ -10,12 +10,12 @@
         <module name="dd-iot" />
         <module name="dd-common-util" />
         <module name="dd-trash" />
+        <module name="dd-common-minio" />
         <module name="dd-service-util" />
         <module name="dd-iot-client" />
         <module name="dd-model" />
         <module name="dd-user-client" />
         <module name="dd-lighting" />
-        <module name="dd-common-minio" />
         <module name="dd-product-user" />
       </profile>
     </annotationProcessing>

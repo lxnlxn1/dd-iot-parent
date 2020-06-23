@@ -87,5 +87,13 @@ public class DdSyncController {
     }
 
 
+    //现场项目同步接口
+    @ApiOperation("现场版本数据同步接口（现场版）")
+    @GetMapping("/synchronizationProject")
+    public DdResult synchronizationProject() {
+        return DdResult.ok("更新失败");
+    }
+
+
 }
 

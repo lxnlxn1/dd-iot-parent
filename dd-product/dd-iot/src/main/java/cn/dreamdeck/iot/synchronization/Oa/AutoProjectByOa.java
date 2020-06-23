@@ -45,8 +45,8 @@ public class AutoProjectByOa {
                         ddProject1.setStatus(rojectRVo.getStatus());
                         ddProject1.setProjectImg("http://file.dreamdeck.cn/app/icons//website/logo/2019-05/23/5d3295c4-a8d3-4779-b614-b1a7dac0db09.gif");
                         ddProject1.setProjectSite("项目地址");
-                        ddProject1.setUserId(rojectRVo.getUserId());
                         SysUser userById = sysUserFeignService.getUserById(rojectRVo.getUserId().toString());
+                        ddProject1.setUserId(userById.getUserId());
                         ddProject1.setUserName(userById.getUsername());
                         ddProject1.setCreateTime(DateUtil.getTime());
                         ddProject1.setUpdateTime(DateUtil.getTime());

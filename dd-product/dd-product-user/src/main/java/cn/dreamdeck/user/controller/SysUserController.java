@@ -13,6 +13,7 @@ import cn.dreamdeck.user.service.SysUserService;
 import cn.dreamdeck.user.synchronization.Oa.AutoProjectByOa;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/user")
+@Api(description = "用户管理")
 public class SysUserController {
 
 
@@ -48,19 +50,20 @@ public class SysUserController {
     @Autowired
     private DdSynFeignService ddSynFeignService;
 
-    AuthContextHolder authContextHolder = new AuthContextHolder();
+    @Autowired
+    AuthContextHolder authContextHolder;
 
     /**
      * 登录
      */
-    @PostMapping("/passport/login")
-    public DdResult login(@RequestBody SysUser sysUser) {
+    @PostMapping("/passport/login/{version}")
+    public DdResult login(@PathVariable(value = "version",required = true) String version,@RequestBody SysUser sysUser) {
         SysUser info = sysUserService.login(sysUser);
         if (info != null) {
             String token = UUID.randomUUID().toString().replaceAll("-", "");
             HashMap<String, Object> map = new HashMap<>();
             map.put("token", token);
-            redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + token, info.getUserId().toString(), RedisConst.USERKEY_TIMEOUT, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + token, info.getUserId().toString()+","+version, RedisConst.USERKEY_TIMEOUT, TimeUnit.SECONDS);
             return DdResult.ok(map);
         } else {
             return DdResult.fail().message("用户名或密码错误");
@@ -69,11 +72,9 @@ public class SysUserController {
 
     @GetMapping("/passport/info")
     public DdResult info(HttpServletRequest request) {
-        String token = authContextHolder.getToken(request);
-        String userKey = "user:login:" + token;
-        String userId = (String) redisTemplate.opsForValue().get(userKey);
-        SysUser sysUser = sysUserService.getUser(userId);
-        List<SysRole> roleList = sysRoleService.getRoleByUserId(userId);
+        String token = authContextHolder.getUserId(request);
+        SysUser sysUser = sysUserService.getUser(token);
+        List<SysRole> roleList = sysRoleService.getRoleByUserId(token);
         StringBuffer roleName = new StringBuffer();
         for (SysRole sysRole : roleList) {
             roleName.append(sysRole.getRoleName());
@@ -96,10 +97,8 @@ public class SysUserController {
      */
     @GetMapping("/passport/logout")
     public DdResult logout(HttpServletRequest request) {
-        String token = authContextHolder.getToken(request);
-        String userKey = "user:login:" + token;
-        String userId = (String) redisTemplate.opsForValue().get(userKey);
-        redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + "token");
+        String token = authContextHolder.getUserToken(request);
+        redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + token);
         return DdResult.ok();
     }
 
