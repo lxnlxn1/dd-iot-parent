@@ -67,17 +67,6 @@ public class SysProjectRoleController {
         return DdResult.ok(sysProjectRoles);
     }
 
-    @ApiOperation(value = "返回全部菜单列表")
-    @GetMapping("/getAllMenu")
-    public DdResult getAllMenu() {
-
-        List<DdMenu> ddMenuList = ddMenuService.list(new QueryWrapper<DdMenu>());
-
-        if (ddMenuList == null && ddMenuList.size() <= 0) {
-            return DdResult.fail("服务器错误");
-        }
-        return DdResult.fail(ddMenuList);
-    }
 
     //添加
     @ApiOperation(value = "添加权限列表")
@@ -131,8 +120,23 @@ public class SysProjectRoleController {
             return DdResult.fail("登录异常");
         }
         String version = authContextHolder.getUserVersion(request);
-        List<DdMenu> ddMenuList = sysProjectRoleService.getAllRoleByUserId(projectId, userId,version);
+        List<DdMenu> ddMenuList = sysProjectRoleService.getAllRoleByUserId(projectId, userId, version);
         return DdResult.ok(ddMenuList);
     }
+
+
+    //分类列表
+    @ApiOperation(value = "编辑项目id和权限id添加菜单")
+    @GetMapping("/updateMenuByRoleId/{projectId}/{roleName}/{menuIds}")
+    public DdResult saveMenuByRoleId(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "roleName", required = true) String roleName,@PathVariable(value = "menuIds", required = true) String menuIds) {
+
+        boolean isOk = sysProjectRoleService.updateMenuByRoleId(projectId, roleName,menuIds);
+        if (isOk) {
+            return DdResult.ok("添加成功");
+        }
+        return DdResult.fail("添加失败");
+    }
+
+
 }
 

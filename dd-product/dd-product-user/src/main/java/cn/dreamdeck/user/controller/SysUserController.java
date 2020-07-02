@@ -3,7 +3,7 @@ package cn.dreamdeck.user.controller;
 
 import cn.dreamdeck.common.result.DdResult;
 import cn.dreamdeck.common.util.AuthContextHolder;
-import cn.dreamdeck.iot.client.DdSynFeignService;
+import cn.dreamdeck.iot.client.DdIotFeignService;
 import cn.dreamdeck.model.iot.DdSync;
 import cn.dreamdeck.model.user.SysRole;
 import cn.dreamdeck.model.user.SysUser;
@@ -48,7 +48,7 @@ public class SysUserController {
 
 
     @Autowired
-    private DdSynFeignService ddSynFeignService;
+    private DdIotFeignService ddSynFeignService;
 
     @Autowired
     AuthContextHolder authContextHolder;
@@ -123,7 +123,7 @@ public class SysUserController {
 
         sysUserList = (List<SysUser>) redisTemplate.opsForValue().get(RedisConst.PROJECT_USER_KEY_PREFIX);
         if (sysUserList == null) {
-            sysUserList = sysUserService.list(new QueryWrapper<SysUser>().orderByAsc("user_id").select("user_id", "username", "phone"));
+            sysUserList = sysUserService.list(new QueryWrapper<SysUser>().orderByAsc("user_id").select("user_id", "username", "phone","avatar"));
             redisTemplate.opsForValue().set(RedisConst.PROJECT_USER_KEY_PREFIX, sysUserList, RedisConst.PROJECT_USER_TIMEOUT, TimeUnit.SECONDS);
         }
         return DdResult.ok(sysUserList);

@@ -2,7 +2,6 @@ package cn.dreamdeck.service.constant;
 
 /**
  * Redis常量配置类
- *
  */
 public class RedisConst {
 
@@ -14,7 +13,7 @@ public class RedisConst {
     //单位：秒 锁的持有时间
     public static final long SKULOCK_EXPIRE_PX2 = 1;
     public static final String SKULOCK_SUFFIX = ":lock";
-    public static final long SKUKEY_TEMPORARY_TIMEOUT=60*60;
+    public static final long SKUKEY_TEMPORARY_TIMEOUT = 60 * 60;
 
     public static final String USER_KEY_PREFIX = "user:";
     public static final String USER_CART_KEY_SUFFIX = ":cart";
@@ -34,12 +33,10 @@ public class RedisConst {
 
 
     //语音垃圾桶
-    public static final String DEVICE_TRASH_DATA = "device:trash:data:";
-    public static final String DEVICE_TRASH_NUM = "device:trash:num:";
-
-
-
-
+    public static final String DEVICE_TRASH_DATA = "trash:data:"; //语音垃圾桶
+    public static final String DEVICE_TRASH_NUM = "trash:num:";
+    public static final String DEVICE_TRASH_OPENNUM = "trash:opennum:";
+    public static final String DEVICE_TRASH_IP = "trash:ip:";
 
 
 }

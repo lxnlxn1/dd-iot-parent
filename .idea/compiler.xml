@@ -10,12 +10,14 @@
         <module name="dd-iot" />
         <module name="dd-common-util" />
         <module name="dd-trash" />
-        <module name="dd-common-minio" />
+        <module name="dd-insect" />
         <module name="dd-service-util" />
         <module name="dd-iot-client" />
         <module name="dd-model" />
+        <module name="dd-common-swagger" />
         <module name="dd-user-client" />
         <module name="dd-lighting" />
+        <module name="dd-common-minio" />
         <module name="dd-product-user" />
       </profile>
     </annotationProcessing>
@@ -24,8 +26,10 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="dd-common-minio" options="-parameters" />
+      <module name="dd-common-swagger" options="-parameters" />
       <module name="dd-common-util" options="-parameters" />
       <module name="dd-gateway" options="-parameters" />
+      <module name="dd-insect" options="-parameters" />
       <module name="dd-iot" options="-parameters" />
       <module name="dd-iot-client" options="-parameters" />
       <module name="dd-iot-parent" options="-parameters" />

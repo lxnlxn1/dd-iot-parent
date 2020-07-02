@@ -8,9 +8,9 @@ spring:
   cloud:
     sentinel:
       transport:
-        dashboard: http://192.168.1.96:8858
+        dashboard: http://192.168.113.96:8858
   redis:
-    host: 192.168.1.96
+    host: 192.168.113.96
     port: 6379
     database: 0
     timeout: 1800000
@@ -24,7 +24,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.1.96:13306/dd-user?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.113.96:13306/dd-user?characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     hikari:
@@ -38,6 +38,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
 feign:
   sentinel:
     enabled: true

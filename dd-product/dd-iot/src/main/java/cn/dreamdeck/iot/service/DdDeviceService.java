@@ -1,6 +1,7 @@
 package cn.dreamdeck.iot.service;
 
 import cn.dreamdeck.model.iot.DdDevice;
+import cn.dreamdeck.model.iot.DeviceConfig.DeviceConfig;
 import cn.dreamdeck.model.iot.vo.DdDeviceVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,4 +22,7 @@ public interface DdDeviceService extends IService<DdDevice> {
     IPage<DdDeviceVo> pageDeviceVo(IPage<DdDevice> projectIPage);
 
     DdDeviceVo getDeviceVo(String deviceId);
+
+
+    boolean saveDeviceVo(DeviceConfig deviceConfig);
 }

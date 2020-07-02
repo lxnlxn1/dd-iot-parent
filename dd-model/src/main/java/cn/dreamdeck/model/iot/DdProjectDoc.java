@@ -39,14 +39,17 @@ public class DdProjectDoc implements Serializable {
     @ApiModelProperty(value = "项目文档类型")
     private Integer projectDocType;
 
-    @ApiModelProperty(value = "项目文档地址")
-    private String projectDocUrl;
+    @ApiModelProperty(value = "设备Id")
+    private String modelId;
 
     @ApiModelProperty(value = "创建日期")
     private String createTime;
 
     @ApiModelProperty(value = "状态")
     private Integer status;
+
+    @ApiModelProperty(value = "bucket_id")
+    private String bucketName;
 
 
 }

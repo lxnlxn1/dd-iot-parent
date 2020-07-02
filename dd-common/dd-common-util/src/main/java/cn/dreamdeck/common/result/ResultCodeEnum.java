@@ -14,7 +14,6 @@ public enum ResultCodeEnum {
     SERVICE_ERROR(2012, "服务异常"),
     LOGIN_AUTH(208, "未登陆"),
     PERMISSION(209, "没有权限"),
-
     SECKILL_ILLEGAL(217, "请求不合法"),
     ;
 

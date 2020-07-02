@@ -41,7 +41,7 @@ public class DdDevice implements Serializable {
     private Integer brandId;
 
     @ApiModelProperty(value = "分类ID")
-    private Integer classifyId;
+    private Integer TypeId;
 
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
@@ -54,7 +54,7 @@ public class DdDevice implements Serializable {
     private Integer subsetId;
 
     @ApiModelProperty(value = "设备类型")
-    private Integer deviceType;
+    private Integer deviceClassify;
 
     @ApiModelProperty(value = "设备状态")
     private Integer status;
@@ -76,6 +76,10 @@ public class DdDevice implements Serializable {
 
     @ApiModelProperty(value = "安装人员用户名")
     private String installUserName;
+
+
+    private Integer soleId;
+
 
 
 }

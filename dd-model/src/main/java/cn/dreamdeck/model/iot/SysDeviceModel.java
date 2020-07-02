@@ -70,7 +70,7 @@ public class SysDeviceModel implements Serializable {
     private Integer modelCom;
 
     @ApiModelProperty(value = "设备文档")
-    private String modelDocument;
+    private Integer docId;
 
 
 }

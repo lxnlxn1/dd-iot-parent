@@ -4,12 +4,10 @@ import cn.dreamdeck.common.data.DateUtil;
 import cn.dreamdeck.iot.mapper.SysProjectRoleMapper;
 import cn.dreamdeck.iot.service.*;
 import cn.dreamdeck.model.iot.*;
-import cn.dreamdeck.service.constant.RedisConst;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +36,7 @@ public class SysProjectRoleServiceImpl extends ServiceImpl<SysProjectRoleMapper,
     @Autowired
     private DdMenuService ddMenuService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+
 
     @Value("${version}")
     private Integer version;
@@ -61,10 +58,13 @@ public class SysProjectRoleServiceImpl extends ServiceImpl<SysProjectRoleMapper,
         //添加进项目权限表
         ddProjectRoleService.save(new DdProjectRole().setProjectId(Integer.valueOf(projectId)).setSysRoleId(sysProjectRole.getRoleId()));
 
+        //    redisTemplate.delete(RedisConst.PROJECT_MENU_KEY_PREFIX+projectId+"_"+sysProjectRole.getProjectId());
         //添加到项目权限菜单表
         String[] split = menuIds.split(",");
+
         for (String menuId : split) {
             boolean save = ddProjectRoleMenuService.save(new DdProjectRoleMenu().setProjectId(Integer.valueOf(projectId)).setRoleId(sysProjectRole.getRoleId()).setVersion(version).setMenuId(Integer.valueOf(menuId)));
+
             return save;
         }
         return false;
@@ -98,36 +98,63 @@ public class SysProjectRoleServiceImpl extends ServiceImpl<SysProjectRoleMapper,
 
     @Override
     public List<DdMenu> getAllRoleByUserId(String projectId, String userId, String version) {
-        List<DdMenu> ddMenuList = null;
-        if (redisTemplate.hasKey(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId)) {
-            ddMenuList = (List<DdMenu>) redisTemplate.opsForValue().get(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId);
-        } else {
-            List<DdProjectTeam> ddProjectTeamList = ddProjectTeamService.list((new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("user_id", userId)));
-            ArrayList<Integer> integers = new ArrayList<>();
-            for (DdProjectTeam ddProjectTeam : ddProjectTeamList) {
-                integers.add(ddProjectTeam.getRoleId());
-            }
-            //获取菜单IDs
-            ArrayList<Integer> ddProjectRoleMenusIds = new ArrayList<>();
-            // ArrayList<List<DdProjectRoleMenu>> arrayList = new ArrayList<>();
-            for (Integer integer : integers) {
-                List<DdProjectRoleMenu> list = ddProjectRoleMenuService.list(new QueryWrapper<DdProjectRoleMenu>().eq("project_id", projectId).eq("role_id", integer));
-                //arrayList.add(list);
-                list.stream().forEach(f -> {
-                    ddProjectRoleMenusIds.add(f.getMenuId());
-                });
-            }
-            //去重
-            List<Integer> ids = new ArrayList(new HashSet(ddProjectRoleMenusIds));
-            if (ids.size() > 0) {
-                for (int i = 0; i < ids.size(); i++) {
-                    ddMenuList.add(ddMenuService.getOne(new QueryWrapper<DdMenu>().eq("menu_id", i).eq("version", version)));
-                }
-            }
-            redisTemplate.opsForValue().set(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId, ddMenuList);
+        List<DdMenu> ddMenuList = new ArrayList<>();
+//        if (redisTemplate.hasKey(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId)) {
+//            ddMenuList = (List<DdMenu>) redisTemplate.opsForValue().get(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId);
+//        } else {
+        List<DdProjectTeam> ddProjectTeamList = ddProjectTeamService.list((new QueryWrapper<DdProjectTeam>().eq("project_id", projectId).eq("user_id", userId)));
+        ArrayList<Integer> integers = new ArrayList<>();
+        for (DdProjectTeam ddProjectTeam : ddProjectTeamList) {
+            integers.add(ddProjectTeam.getRoleId());
         }
+        //获取菜单IDs
+        ArrayList<Integer> ddProjectRoleMenusIds = new ArrayList<>();
+        // ArrayList<List<DdProjectRoleMenu>> arrayList = new ArrayList<>();
+        for (Integer integer : integers) {
+            List<DdProjectRoleMenu> list = ddProjectRoleMenuService.list(new QueryWrapper<DdProjectRoleMenu>().eq("project_id", projectId).eq("role_id", integer));
+            //arrayList.add(list);
+            list.stream().forEach(f -> {
+                ddProjectRoleMenusIds.add(f.getMenuId());
+            });
+        }
+        //去重
+        List<Integer> ids = new ArrayList(new HashSet(ddProjectRoleMenusIds));
+        if (ids.size() > 0) {
+            for (int i = 0; i < ids.size(); i++) {
+                Integer integer = ids.get(i);
+                ddMenuList.add(ddMenuService.getOne(new QueryWrapper<DdMenu>().eq("menu_id", integer).eq("version", version)));
+            }
+        }
+        // redisTemplate.opsForValue().set(RedisConst.PROJECT_MENU_KEY_PREFIX + projectId + userId, ddMenuList);
+        //  }
 
         return ddMenuList;
+    }
+
+    @Override
+    public boolean updateMenuByRoleId(String projectId, String roleName, String menuIds) {
+
+        SysProjectRole sysProjectRole = baseMapper.selectOne(new QueryWrapper<SysProjectRole>().eq("role_name", roleName).eq("project_id", projectId));
+        sysProjectRole.setRoleName(roleName);
+        sysProjectRole.setUpdateTime(DateUtil.getTime());
+        baseMapper.updateById(sysProjectRole);
+
+        boolean remove = ddProjectRoleMenuService.remove(new QueryWrapper<DdProjectRoleMenu>().eq("project_id", projectId).eq("role_id", sysProjectRole.getRoleId()));
+        if (remove) {
+            String[] split = menuIds.split(",");
+            for (String s : split) {
+                DdMenu byId = ddMenuService.getById(s);
+                DdProjectRoleMenu ddProjectRoleMenu = new DdProjectRoleMenu();
+
+                ddProjectRoleMenu.setProjectId(Integer.valueOf(projectId));
+                ddProjectRoleMenu.setRoleId(Integer.valueOf(sysProjectRole.getRoleId()));
+                ddProjectRoleMenu.setMenuId(Integer.valueOf(s));
+                ddProjectRoleMenu.setVersion(byId.getVersion());
+                boolean save = ddProjectRoleMenuService.save(ddProjectRoleMenu);
+            }
+            return true;
+        }
+        return false;
     }
 
 

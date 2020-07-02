@@ -16,6 +16,7 @@
         <module>dd-lighting</module>
         <module>dd-trash</module>
         <module>dd-iot</module>
+        <module>dd-insect</module>
     </modules>
 
 
@@ -46,6 +47,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
 
         <!--mybatis-plus-->
         <dependency>

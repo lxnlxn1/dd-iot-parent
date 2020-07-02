@@ -23,7 +23,7 @@ public class AutoProjectByOa {
             JSONObject projectObject = JSONObject.parseObject(jsonStrBody);
             receiveList = (List<RojectRUserVo>) JSONArray.parseArray(projectObject.getString("data"), RojectRUserVo.class);
             List<SysUser> sysUserList = sysUserService.list(new QueryWrapper<SysUser>());
-            System.out.println("------------" + receiveList.get(0).getUsername());
+         //   System.out.println("------------" + receiveList.get(0).getUsername());
             if (null != receiveList && receiveList.size() > 0 && null != sysUserList) {
 
                 for (RojectRUserVo rojectRUserVo : receiveList) {

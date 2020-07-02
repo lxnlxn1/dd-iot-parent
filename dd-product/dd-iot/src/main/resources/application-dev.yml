@@ -10,9 +10,9 @@ spring:
   cloud:
     sentinel:
       transport:
-        dashboard: 192.168.1.96:8858 #web页面限流熔断
+        dashboard: 192.168.113.96:8858 #web页面限流熔断
   rabbitmq:
-    host: 192.168.1.96
+    host: 192.168.113.96
     port: 5672
     username: guest
     password: guest
@@ -23,7 +23,7 @@ spring:
 #        cknowledge-mode: manual #默认情况下消息消费者是自动确认消息的，如果要手动确认消息则需要修改确认模式为manual
 #        prefetch: 1 # 消费者每次从队列获取的消息数量。此属性当不设置时为：轮询分发，设置为1为：公平分发
   redis:
-    host: 192.168.1.96
+    host: 192.168.113.96
     port: 6379
     database: 0
     timeout: 1800000
@@ -37,7 +37,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.1.96:13306/dd-iot?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.113.96:13306/dd-iot?characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     hikari:
@@ -51,6 +51,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
 feign:
   sentinel:
     enabled: true
@@ -60,10 +61,11 @@ feign:
         readTimeout: 3000
         connectTimeout: 1000
 minio:
-  url: http://192.168.1.96:9000
+  url: http://192.168.113.96:9000
   access: minioadmin
   secret: minioadmin
-  bucket: test
+  bucket: project
+  bucket1: device
 swagger:
   enabled: true
 version: 1

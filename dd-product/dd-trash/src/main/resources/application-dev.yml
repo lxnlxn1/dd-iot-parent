@@ -10,14 +10,15 @@ spring:
   cloud:
     sentinel:
       transport:
-        dashboard: http://192.168.1.96:8858 #web页面限流熔断
+#        dashboard: http://192.168.1.96:8858 #web页面限流熔断
+        dashboard: http://192.168.113.96:8858 #web页面限流熔断
   rabbitmq:
-    host: 192.168.1.96
+    host: 192.168.113.96
     port: 5672
     username: guest
     password: guest
   redis:
-    host: 192.168.1.96
+    host: 192.168.113.96
     port: 6379
     database: 0
     timeout: 1800000
@@ -31,7 +32,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.1.96:13306/dreamdeck_trash?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://192.168.113.96:13306/dreamdeck_trash?characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     hikari:
@@ -45,3 +46,11 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+feign:
+  sentinel:
+    enabled: true
+  client:
+    config:
+      default:
+        readTimeout: 3000
+        connectTimeout: 1000

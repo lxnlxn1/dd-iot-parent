@@ -1,6 +1,7 @@
 package cn.dreamdeck.iot.service;
 
 import cn.dreamdeck.model.iot.SysDeviceModel;
+import cn.dreamdeck.model.iot.vo.ModelVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysDeviceModelService extends IService<SysDeviceModel> {
 
+    ModelVo getModelVoByModelId(String modelId);
 }

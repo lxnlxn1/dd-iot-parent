@@ -88,7 +88,6 @@ public class RedisConfig {
 
         // 将redis 中的数据类型 ：进行了序列化与反序列化操作！
         // redis String ， hash 数据类型
-        // set("user","UserInfo.toString()")  get("user") 序列化的对象：保持的二进制数据
         redisTemplate.setKeySerializer(new StringRedisSerializer()); // 序列化与反序列化string key
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer); // 序列化与反序列化 string value
         redisTemplate.setHashKeySerializer(new StringRedisSerializer()); // 序列化与反序列化 hash key

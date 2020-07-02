@@ -3,8 +3,6 @@ package cn.dreamdeck.trash.service;
 import cn.dreamdeck.model.trash.DdTrash;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.Map;
-
 
 /**
  * <p>
@@ -17,21 +15,23 @@ import java.util.Map;
 public interface DdTrashService extends IService<DdTrash> {
 
     //开桶
-    String openTrash(String ip, String num);
+    String openTrash(String trashId, String num);
 
 
     //状态
-    String status(String ip);
+    String status(String trashId);
 
     //添加到设备列表
     boolean saveDevice(DdTrash ddTrash);
 
-    Map<String, Integer> openNum(String ip);
+    String openNum(String trashId);
 
     boolean updateDevice(String ip);
 
-    String openData(int i, int i1);
+    String openData(int id, int num);
 
 
     DdTrash selectByauiaModel(String model);
+
+    String satisfaction(String trashId);
 }

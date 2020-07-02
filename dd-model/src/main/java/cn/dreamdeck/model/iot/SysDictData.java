@@ -39,8 +39,7 @@ public class SysDictData implements Serializable {
     @ApiModelProperty(value = "字典标签")
     private String dictLabel;
 
-    @ApiModelProperty(value = "字典键值")
-    private String dictValue;
+
 
     @ApiModelProperty(value = "字典类型")
     private String dictType;

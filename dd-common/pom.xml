@@ -16,6 +16,7 @@
         <module>dd-common-util</module>
         <module>dd-service-util</module>
         <module>dd-common-minio</module>
+        <module>dd-common-swagger</module>
     </modules>
 
 <dependencies>

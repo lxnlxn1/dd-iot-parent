@@ -22,4 +22,7 @@ public interface SysProjectRoleService extends IService<SysProjectRole> {
 
 
     List<DdMenu> getAllRoleByUserId(String projectId, String userId,String version);
+
+
+    boolean updateMenuByRoleId(String projectId, String roleName, String menuIds);
 }

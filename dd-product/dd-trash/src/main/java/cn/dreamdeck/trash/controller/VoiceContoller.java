@@ -6,10 +6,10 @@ import cn.dreamdeck.common.data.Sha1Util;
 import cn.dreamdeck.common.data.Util;
 import cn.dreamdeck.model.trash.DdGarbageClassification;
 import cn.dreamdeck.model.trash.DdTrash;
+import cn.dreamdeck.service.constant.RedisConst;
 import cn.dreamdeck.trash.netty.DdServerHandler;
 import cn.dreamdeck.trash.service.DdGarbageClassificationService;
 import cn.dreamdeck.trash.service.DdTrashService;
-import cn.dreamdeck.trash.service.RedisService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -20,6 +20,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,7 +34,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lxkui
@@ -49,21 +50,26 @@ public class VoiceContoller {
 
 
     private static final Logger logger = LoggerFactory.getLogger(VoiceContoller.class);
+
     @Resource
     private DdGarbageClassificationService ddGarbageClassificationService;
 
-    @Autowired
-    private RedisService redisService;
 
-    //使用次数
-    private static Map<String, Integer> map = new ConcurrentHashMap<String, Integer>();
+
 
     @Autowired
     private DdTrashService ddTrashService;
+
+//    @Autowired
+//    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+
     @PostMapping(value = "/classify/{scene}")
     @ResponseBody
-
-    public String find(@PathVariable("scene") String scene) {
+    public String find(@PathVariable(value = "scene", required = true) String scene) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
         HttpServletRequest request = attributes.getRequest();
@@ -76,13 +82,17 @@ public class VoiceContoller {
             classifyName += request.getParameter(name);
         }
 
-      //  System.out.println("------------------------------------"+scene);
-        String model =scene;
+        if ("谢谢".equals(classifyName) || "谢谢你".equals(classifyName)) {
+            return "不客气，垃圾分类从我做起";
+        }
+        //  System.out.println("------------------------------------"+scene);
+        String model = scene;
         DdTrash ddTrash = ddTrashService.selectByauiaModel(model);
 
-        String ip = ddTrash.getDeviceIp();
+        Integer deviceId = ddTrash.getSoleId();
         int num = 0;
-        String s = DdServerHandler.resuleMap.get(ip);
+
+        String s = (String) redisTemplate.opsForValue().get(RedisConst.DEVICE_TRASH_NUM + deviceId);
         // String s = "20,20,20,20";
         String[] split = new String[0];
         try {
@@ -93,20 +103,35 @@ public class VoiceContoller {
         } catch (Exception e) {
             return "网络连接错误，请联系管理员";
         }
-        DdGarbageClassification ddGarbageClassification = ddGarbageClassificationService.likeName(classifyName);
+
+        //  classifyName = "香蕉皮";
+
+        DdGarbageClassification ddGarbageClassification = null;
+        if (!StringUtils.isEmpty(classifyName)) {
+            ddGarbageClassification = ddGarbageClassificationService.likeName(classifyName);
+        } else {
+            return "参数错误，请联系管理员";
+        }
+
         if (ddGarbageClassification != null) {
             if (ddGarbageClassification.getCategory() == 1) {
                 // System.out.println("这是可回收垃圾");
 
-                if (Integer.parseInt(split[0],16)==100){
+                if (Integer.parseInt(split[0], 16) == 100) {
                     return "该桶已满，请联系管理员";
                 }
 
-                String value =  ddTrashService.openData(1,1);
-                byte[] bytes =  Util.hexStrToBinaryStr(value);
+                String value = ddTrashService.openData(deviceId, 3);
+                byte[] bytes = Util.hexStrToBinaryStr(value);
                 ByteBuf buf = Unpooled.wrappedBuffer(bytes);
-                DdServerHandler.map.get(ip).channel().writeAndFlush(buf);
 
+                try {
+                    DdServerHandler.map.get(deviceId).channel().writeAndFlush(buf);
+                } catch (Exception e) {
+                    return "设备离线，请联系管理员";
+                }
+
+                Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisConst.DEVICE_TRASH_OPENNUM + deviceId);
 
                 if (map.get("可回收垃圾") == null) {
                     map.put("可回收垃圾", num);
@@ -114,21 +139,28 @@ public class VoiceContoller {
                 int num1 = map.get("可回收垃圾");
                 ++num1;
                 map.put("可回收垃圾", num1);
+                redisTemplate.opsForHash().putAll(RedisConst.DEVICE_TRASH_OPENNUM + deviceId,map);
 
                 return "这是可回收垃圾，桶盖已开,垃圾分类从我做起";
 
 
-
             } else if (ddGarbageClassification.getCategory() == 2) {
-                if (Integer.parseInt(split[1],16)==100){
+                if (Integer.parseInt(split[1], 16) == 100) {
                     return "该桶已满，请联系管理员";
                 }
 
 
-                String value =  ddTrashService.openData(1,2);
-                byte[] bytes =  Util.hexStrToBinaryStr(value);
+                String value = ddTrashService.openData(deviceId, 4);
+                byte[] bytes = Util.hexStrToBinaryStr(value);
                 ByteBuf buf = Unpooled.wrappedBuffer(bytes);
-                DdServerHandler.map.get(ip).channel().writeAndFlush(buf);
+
+                try {
+                    DdServerHandler.map.get(deviceId).channel().writeAndFlush(buf);
+                } catch (Exception e) {
+                    return "设备离线，请联系管理员";
+                }
+
+                Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisConst.DEVICE_TRASH_OPENNUM + deviceId);
 
                 if (map.get("有害垃圾") == null) {
                     map.put("有害垃圾", num);
@@ -136,20 +168,28 @@ public class VoiceContoller {
                 int num2 = map.get("有害垃圾");
                 ++num2;
                 map.put("有害垃圾", num2);
+                redisTemplate.opsForHash().putAll(RedisConst.DEVICE_TRASH_OPENNUM + deviceId,map);
+
                 return "这是有害垃圾，桶盖已开,垃圾分类从我做起";
 
             } else if (ddGarbageClassification.getCategory() == 4) {
                 //     return "这是厨余垃圾，桶盖已开垃圾分类从我做起";
 
 
-
-                if (Integer.parseInt(split[2],16)==100){
+                if (Integer.parseInt(split[2], 16) == 100) {
                     return "该桶已满，请联系管理员";
                 }
-                String value =  ddTrashService.openData(1,3);
-                byte[] bytes =  Util.hexStrToBinaryStr(value);
+                String value = ddTrashService.openData(deviceId, 1);
+                byte[] bytes = Util.hexStrToBinaryStr(value);
                 ByteBuf buf = Unpooled.wrappedBuffer(bytes);
-                DdServerHandler.map.get(ip).channel().writeAndFlush(buf);
+                try {
+                    DdServerHandler.map.get(deviceId).channel().writeAndFlush(buf);
+                } catch (Exception e) {
+                    return "设备离线，请联系管理员";
+                }
+
+                Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisConst.DEVICE_TRASH_OPENNUM + deviceId);
+
 
                 if (map.get("厨余垃圾") == null) {
                     map.put("厨余垃圾", num);
@@ -157,23 +197,38 @@ public class VoiceContoller {
                 int num3 = map.get("厨余垃圾");
                 ++num3;
                 map.put("厨余垃圾", num3);
+
+                redisTemplate.opsForHash().putAll(RedisConst.DEVICE_TRASH_OPENNUM + deviceId,map);
+
                 return "这是厨余垃圾，桶盖已开，垃圾分类从我做起";
 
             } else if (ddGarbageClassification.getCategory() == 8) {
                 // System.out.println("这是其他垃圾");
-                if (Integer.parseInt(split[3],16)==100){
+                if (Integer.parseInt(split[3], 16) == 100) {
                     return "该桶已满，请联系管理员";
                 }
-                String value =  ddTrashService.openData(1,4);
-                byte[] bytes =  Util.hexStrToBinaryStr(value);
+                String value = ddTrashService.openData(deviceId, 2);
+                byte[] bytes = Util.hexStrToBinaryStr(value);
                 ByteBuf buf = Unpooled.wrappedBuffer(bytes);
-                DdServerHandler.map.get(ip).channel().writeAndFlush(buf);
+
+
+                try {
+                    DdServerHandler.map.get(deviceId).channel().writeAndFlush(buf);
+                } catch (Exception e) {
+                    return "设备离线，请联系管理员";
+                }
+
+
+                Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisConst.DEVICE_TRASH_OPENNUM + deviceId);
+
                 if (map.get("其他垃圾") == null) {
                     map.put("其他垃圾", num);
                 }
                 int num4 = map.get("其他垃圾");
                 ++num4;
                 map.put("其他垃圾", num4);
+                redisTemplate.opsForHash().putAll(RedisConst.DEVICE_TRASH_OPENNUM + deviceId,map);
+
                 return "这是其他垃圾，桶盖已开，垃圾分类从我做起";
             }
 

@@ -1,6 +1,2 @@
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\DdDeviceFeignService.java
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\impl\DdDeviceFeignFeignClientImpl.java
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\RemoteProjectService.java
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\impl\DdSynFeignServiceImpl.java
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\impl\RemoteProjectFeignClientImpl.java
-C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\DdSynFeignService.java
+C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\impl\DdIotFeignServiceImpl.java
+C:\tools\work\dd-iot-parent\dd-product-client\dd-iot-client\src\main\java\cn\dreamdeck\iot\client\DdIotFeignService.java

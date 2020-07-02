@@ -20,6 +20,9 @@ public class DdProjectVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "项目Id")
+    private String projectId;
+
     @ApiModelProperty(value = "项目名称")
     private String projectName;
 

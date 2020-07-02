@@ -3,7 +3,9 @@ package cn.dreamdeck.iot.controller.device;
 
 import cn.dreamdeck.common.result.DdResult;
 import cn.dreamdeck.iot.service.DdDeviceService;
+import cn.dreamdeck.iot.service.SysDictDataService;
 import cn.dreamdeck.model.iot.DdDevice;
+import cn.dreamdeck.model.iot.DeviceConfig.DeviceConfig;
 import cn.dreamdeck.model.iot.vo.DdDeviceVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,6 +15,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -30,6 +34,9 @@ public class DdDeviceController {
 
     @Autowired
     private DdDeviceService ddDeviceService;
+
+    @Autowired
+    private SysDictDataService sysDictDataService;
 
     //查询设备
     @ApiOperation(value = "根据项目id，查询查询设备（分页，查询）")
@@ -52,7 +59,7 @@ public class DdDeviceController {
         QueryWrapper<DdDevice> wrapper = new QueryWrapper<>();
         wrapper.eq("project_id", projectId);
 
-        if (null!=ddDeviceVo){
+        if (null != ddDeviceVo) {
 
             if (!StringUtils.isEmpty(ddDeviceVo.getClassifyId()))
                 wrapper.eq("classify_id", ddDeviceVo.getClassifyId());
@@ -80,7 +87,6 @@ public class DdDeviceController {
         }
 
 
-
         wrapper.orderByDesc("create_time");
 
         IPage<DdDevice> projectIPage = ddDeviceService.page(page, wrapper);
@@ -105,12 +111,30 @@ public class DdDeviceController {
         return DdResult.fail("查询数据为空");
     }
 
+
+    //查询设备根据功能
+    @ApiOperation(value = "查询设备根据2级分类")
+    @GetMapping("/getDeviceByType/{typeId}")
+    public DdResult getDeviceByType(@PathVariable(value = "typeId", required = true) String typeId) {
+
+        List<DdDevice> list = ddDeviceService.list(new QueryWrapper<DdDevice>().eq("type_id", typeId).eq("status", 0));
+
+        if (null != list && list.size() >= 0) {
+            return DdResult.ok(list);
+        }
+        return DdResult.fail("查询设备失败");
+    }
+
     //添加设备
     @ApiOperation(value = "添加设备")
-    @PostMapping("/saveDeviceVo")
-    public DdResult saveDeviceVo(@RequestBody DdDevice ddDevice) {
+    @PostMapping(value = "/saveDeviceVo")
+    public DdResult saveDeviceVo(@RequestBody DeviceConfig deviceConfig) {
 
+     boolean save = ddDeviceService.saveDeviceVo(deviceConfig);
 
+     if (save){
+         return DdResult.ok("添加设备成功");
+     }
         return DdResult.fail("添加设备失败");
     }
 

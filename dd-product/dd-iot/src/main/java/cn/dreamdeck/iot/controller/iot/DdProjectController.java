@@ -1,6 +1,7 @@
 package cn.dreamdeck.iot.controller.iot;
 
 
+import cn.dreamdeck.common.data.DateUtil;
 import cn.dreamdeck.common.result.DdResult;
 import cn.dreamdeck.common.util.AuthContextHolder;
 import cn.dreamdeck.iot.service.DdProjectService;
@@ -124,25 +125,23 @@ public class DdProjectController {
     //更改项目
     @ApiOperation(value = "更改项目描述与地址")
     @RequestMapping(value = "/updateProject", method = RequestMethod.PUT)
-    public DdResult updateProject(@PathVariable("projectId") String projectId, @RequestBody DdProjectVo ddProjectVo) {
+    public DdResult updateProject(@RequestBody DdProjectVo ddProjectVo) {
 
-        DdProject ddProject = ddProjectService.getById(projectId);
+        DdProject ddProject = ddProjectService.getById(ddProjectVo.getProjectId());
         String projectSite = ddProjectVo.getProjectSite();
         String projectDesc = ddProjectVo.getProjectDesc();
         if (!StringUtils.isEmpty(projectSite)) {
             ddProject.setProjectSite(projectSite);
         }
-
         if (!StringUtils.isEmpty(projectDesc)) {
             ddProject.setProjectSite(projectDesc);
         }
+        ddProject.setUpdateTime(DateUtil.getTime());
         boolean b = ddProjectService.updateById(ddProject);
         if (b) {
             return DdResult.ok("更新成功");
         }
         return DdResult.ok("更新失败");
     }
-
-
 }
 

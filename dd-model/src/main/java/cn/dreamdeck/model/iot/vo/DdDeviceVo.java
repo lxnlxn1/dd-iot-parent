@@ -41,11 +41,13 @@ public class DdDeviceVo implements Serializable {
 
 
 
+
     @ApiModelProperty(value = "设备型号ID")
     private Integer modelId;
 
     @ApiModelProperty(value = "设备型号")
     private SysDeviceModel  sysDeviceModel;
+
 
 
 

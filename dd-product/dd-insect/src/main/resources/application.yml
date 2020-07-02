@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: dd-insect
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.113.96:8848
+logging:
+  level:
+    com:
+      alibaba:
+        nacos:
+          client:
+            naming: error

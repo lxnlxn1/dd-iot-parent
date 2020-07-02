@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -52,10 +49,10 @@ public class DdProjectDocController {
 
     //查询项目文档
     @ApiOperation(value = "查询项目文档")
-    @GetMapping("/getProjectDoc/{projectId}/{projectDocType}")
-    public DdResult getProjectDocByProjecId(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocType", required = true) String projectDocType) {
+    @GetMapping("/getProjectDoc/{projectId}/{projectDocTypeId}")
+    public DdResult getProjectDocByProjecId(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocTypeId", required = true) String projectDocTypeId) {
 
-        List<DdProjectDoc> ddProjectDocList = ddProjectDocService.list(new QueryWrapper<DdProjectDoc>().eq("project_id", projectId).eq("project_doc_type", projectDocType));
+        List<DdProjectDoc> ddProjectDocList = ddProjectDocService.list(new QueryWrapper<DdProjectDoc>().eq("project_id", projectId).eq("project_doc_type", projectDocTypeId));
 
         if (null != ddProjectDocList) {
             return DdResult.ok(ddProjectDocList);
@@ -65,11 +62,21 @@ public class DdProjectDocController {
 
 
     //上传文件
-    @ApiOperation(value = "上传文件")
+    @ApiOperation(value = "上传项目文件")
     @PostMapping("/saveProjectDoc/{projectId}/{projectDocTypeId}")
-    public DdResult saveProjectDoc(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocTypeId", required = true) String projectDocTypeId, MultipartFile file) {
+    public DdResult saveProjectDoc(@PathVariable(value = "projectId", required = true) String projectId, @PathVariable(value = "projectDocTypeId", required = true) String projectDocTypeId, @RequestBody MultipartFile file) {
 
-        boolean isOk = ddProjectDocService.saveFile(projectId, projectDocTypeId, file);
+
+        return DdResult.ok(ddProjectDocService.saveFile(projectId, projectDocTypeId, file));
+    }
+
+
+    //上传文件
+    @ApiOperation(value = "上传设备文档")
+    @PostMapping("/saveProjectDocBydevice/{modelId}")
+    public DdResult saveProjectDocBydevice(@PathVariable(value = "modelId", required = true) String modelId, MultipartFile file) {
+
+        boolean isOk = ddProjectDocService.saveFileDevice(modelId, file);
 
         if (isOk) {
             return DdResult.ok("上传成功");
@@ -77,34 +84,65 @@ public class DdProjectDocController {
         return DdResult.fail("服务器错误");
     }
 
+    @ApiOperation(value = "添加bucket")
+    @GetMapping("/saveBucket/{bucketName}")
 
-    //获取文件流
-    @ApiOperation(value = "获取文件流")
-    @GetMapping("/getProjectDocByName/{fileName}")
-
-    public DdResult getProjectDocByName(@PathVariable(value = "fileName", required = true) String fileName) {
-
-        InputStream inputStream = ddProjectDocService.getProjectDocByName(fileName);
-
-        if (null != inputStream) {
-            return DdResult.ok(inputStream);
+    public DdResult saveBucket(@PathVariable(value = "bucketName", required = true) String bucketName) {
+        boolean isOk = ddProjectDocService.saveBucket(bucketName);
+        if (isOk) {
+            return DdResult.ok("添加成功");
         }
-
-        return DdResult.fail("获取文件流失败");
+        return DdResult.fail("服务器错误");
     }
 
-    //直接下载文件
-    @ApiOperation(value = "直接下载文件")
+    @ApiOperation(value = "删除文件")
+    @GetMapping("/delProjectDoc/{projectDocId}")
+
+    public DdResult delProjectDoc(@PathVariable(value = "projectDocId", required = true) String projectDocId) {
+        boolean isOk = ddProjectDocService.delProjectDoc(projectDocId);
+        if (isOk) {
+            return DdResult.ok("删除成功");
+        }
+        return DdResult.fail("服务器错误");
+    }
+
+
+//    //获取文件流
+//    @ApiOperation(value = "获取文件流")
+//    @GetMapping("/getProjectDocByName/{fileName}")
+//
+//    public DdResult getProjectDocByName(@PathVariable(value = "fileName", required = true) String fileName) {
+//
+//        InputStream inputStream = ddProjectDocService.getProjectDocByName(fileName);
+//
+//        if (null != inputStream) {
+//            return DdResult.ok(inputStream);
+//        }
+//
+//        return DdResult.fail("获取文件流失败");
+//    }
+
+    @ApiOperation(value = "获取下载地址")
     @GetMapping("/uploadProjectDocByDocId/{projectDocId}")
 
-    public DdResult uploadProjectDocByName(@PathVariable(value = "projectDocId", required = true) String projectDocId, HttpServletRequest request, HttpServletResponse response) {
+    public DdResult uploadProjectDocByName(@PathVariable(value = "projectDocId", required = true) String projectDocId) {
 
-        ddProjectDocService.uploadProjectDocByName(request,response,projectDocId);
+        String fileUrl = ddProjectDocService.uploadProjectDocByName(projectDocId);
 
-        return DdResult.ok("下载成功");
+        if (null != fileUrl) {
+            return DdResult.ok(fileUrl);
+        }
+        return DdResult.fail(fileUrl);
     }
 
-
+//    @ApiOperation(value = "获取下载流")
+//    @GetMapping("/uploadProjectDocStreamByDocId/{projectDocId}")
+//
+//    public DdResult uploadProjectDocStreamByDocId(@PathVariable(value = "projectDocId", required = true) String projectDocId,HttpServletRequest request , HttpServletResponse response) {
+//        ddProjectDocService.uploadProjectDocStreamByDocId(request,response,projectDocId);
+//
+//        return DdResult.ok();
+//    }
 
 
 //    //添加项目文档类别

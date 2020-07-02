@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * <p>
@@ -46,8 +45,6 @@ public class DdTrash implements Serializable {
     @ApiModelProperty(value = "型号ID")
     private Integer typeId;
 
-    @ApiModelProperty(value = "设备IP")
-    private String deviceIp;
 
     @ApiModelProperty(value = "设备唯一Id")
     private Integer soleId;
@@ -62,10 +59,10 @@ public class DdTrash implements Serializable {
     private String longitude;
 
     @ApiModelProperty(value = "更改时间")
-    private Date lastTime;
+    private String lastTime;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "品牌Id")
     private Integer brandId;
@@ -73,8 +70,6 @@ public class DdTrash implements Serializable {
     @ApiModelProperty(value = "具体类型ID")
     private Integer modelId;
 
-
-    private String TrashFullList;
 
 
 }
