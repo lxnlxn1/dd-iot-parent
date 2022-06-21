@@ -32,7 +32,7 @@
         <cloud.version>Hoxton.RELEASE</cloud.version>
         <cloud.alibaba.version>0.2.2.RELEASE</cloud.alibaba.version>
         <mybatis-plus.version>3.0.5</mybatis-plus.version>
-        <mysql.version>5.1.46</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <swagger.version>2.7.0</swagger.version>
         <swagger.fox.version>2.9.2</swagger.fox.version>
         <knife4j.version>1.9.6</knife4j.version>
